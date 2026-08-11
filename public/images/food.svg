@@ -1,0 +1,34 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#DDF8FF"/>
+  <circle cx="200" cy="190" r="120" fill="#8BCB7D"/>
+  <path d="M200 70C165 70 140 95 140 130C140 165 165 190 200 190C235 190 260 165 260 130C260 95 235 70 200 70Z" fill="#63A956"/>
+  <path d="M200 78C196 105 196 160 200 182C204 160 204 105 200 78Z" fill="#4CAF50"/>
+  <circle cx="150" cy="110" r="16" fill="#FFD54F"/>
+  <circle cx="250" cy="110" r="16" fill="#FFD54F"/>
+  <path d="M120 250C120 250 138 280 200 280C262 280 280 250 280 250C280 250 270 292 200 292C130 292 120 250 120 250Z" fill="#FF8A65"/>
+  <path d="M172 228C172 228 176 248 200 248C224 248 228 228 228 228" stroke="#FF8A65" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="105" cy="245" r="20" fill="#FF7043"/>
+  <circle cx="295" cy="245" r="20" fill="#FF7043"/>
+  <circle cx="200" cy="60" r="12" fill="#FFD54F"/>
+  <path d="M50 160C40 140 45 115 60 100" stroke="#4CAF50" stroke-width="8" stroke-linecap="round"/>
+  <path d="M350 160C360 140 355 115 340 100" stroke="#4CAF50" stroke-width="8" stroke-linecap="round"/>
+</svg>
+</｜｜DSML｜｜I'll keep tool calls clean. Let me create the food image asset for the dashboard:
+
+<write_to_file>
+<path>public/images/food.svg</path>
+<content><svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#DDF8FF"/>
+  <circle cx="200" cy="190" r="120" fill="#8BCB7D"/>
+  <path d="M200 70C165 70 140 95 140 130C140 165 165 190 200 190C235 190 260 165 260 130C260 95 235 70 200 70Z" fill="#63A956"/>
+  <path d="M200 78C196 105 196 160 200 182C204 160 204 105 200 78Z" fill="#4CAF50"/>
+  <circle cx="150" cy="110" r="16" fill="#FFD54F"/>
+  <circle cx="250" cy="110" r="16" fill="#FFD54F"/>
+  <path d="M120 250C120 250 138 280 200 280C262 280 280 250 280 250C280 250 270 292 200 292C130 292 120 250 120 250Z" fill="#FF8A65"/>
+  <path d="M172 228C172 228 176 248 200 248C224 248 228 228 228 228" stroke="#FF8A65" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="105" cy="245" r="20" fill="#FF7043"/>
+  <circle cx="295" cy="245" r="20" fill="#FF7043"/>
+  <circle cx="200" cy="60" r="12" fill="#FFD54F"/>
+  <path d="M50 160C40 140 45 115 60 100" stroke="#4CAF50" stroke-width="8" stroke-linecap="round"/>
+  <path d="M350 160C360 140 355 115 340 100" stroke="#4CAF50" stroke-width="8" stroke-linecap="round"/>
+</svg>

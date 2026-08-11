@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============ ENUMS ============
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
+enum FoodCategory {
+  RICE_AND_GRAINS
+  PROTEIN
+  FRUIT
+  VEGETABLE
+  DAIRY
+  NUTS_AND_SEEDS
+  BEVERAGE
+  OTHER
+}
+
+enum NutrientUnit {
+  KCAL
+  G
+  MG
+  MCG
+  IU
+}
+
+// ============ CORE MODELS ============
+
+/// Stores user profile data
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  age       Int?
+  email     String   @unique
+  weightKg  Decimal? @map("weight_kg") @db.Decimal(5, 2)
+  heightCm  Decimal? @map("height_cm") @db.Decimal(5, 2)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  mealEntries MealEntry[]
+  userTargets UserTarget[]
+
+  @@map("users")
+}
+
+/// Food catalog — static nutrition reference data
+model Food {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  category    FoodCategory
+  servingSize Decimal      @map("serving_size") @db.Decimal(6, 2)
+  servingUnit String       @map("serving_unit")
+  isActive    Boolean      @default(true) @map("is_active")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  nutrients   FoodNutrient[]
+  mealEntries MealEntry[]
+
+  @@index([category])
+  @@index([name])
+  @@map("foods")
+}
+
+/// Nutrient catalog — every measurable nutrient, with its reference standard (RDA/DRI/WHO)
+model Nutrient {
+  id              String       @id @default(cuid())
+  code            String       @unique
+  name            String
+  unit            NutrientUnit
+  dailyReference  Decimal?     @map("daily_reference") @db.Decimal(10, 2)
+  referenceSource String?      @map("reference_source")
+  referenceUrl    String?      @map("reference_url")
+  isEnergy        Boolean      @default(false) @map("is_energy")
+  sortOrder       Int          @default(0) @map("sort_order")
+  createdAt       DateTime     @default(now()) @map("created_at")
+
+  foodNutrients      FoodNutrient[]
+  userTargets        UserTarget[]
+  mealEntryNutrients MealEntryNutrient[]
+
+  @@map("nutrients")
+}
+
+/// Per-food nutrient values (one row per nutrient per food), each with its citation
+model FoodNutrient {
+  id               String   @id @default(cuid())
+  foodId           String   @map("food_id")
+  nutrientId       String   @map("nutrient_id")
+  amountPerServing Decimal  @map("amount_per_serving") @db.Decimal(12, 4)
+  source           String?
+  sourceUrl        String?  @map("source_url")
+  sourceIdentifier String?  @map("source_identifier")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  food     Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  nutrient Nutrient @relation(fields: [nutrientId], references: [id])
+
+  @@unique([foodId, nutrientId])
+  @@map("food_nutrients")
+}
+
+/// Per-user daily intake targets (optional overrides; fallback = Nutrient.dailyReference)
+model UserTarget {
+  id           String   @id @default(cuid())
+  userId       String   @map("user_id")
+  nutrientId   String   @map("nutrient_id")
+  targetAmount Decimal  @map("target_amount") @db.Decimal(10, 2)
+  source       String?
+  sourceUrl    String?  @map("source_url")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nutrient Nutrient @relation(fields: [nutrientId], references: [id])
+
+  @@unique([userId, nutrientId])
+  @@map("user_targets")
+}
+
+/// A food entry logged by the user (meal log)
+model MealEntry {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  foodId    String   @map("food_id")
+  quantity  Decimal  @default(1) @db.Decimal(6, 2)
+  mealType  MealType @map("meal_type")
+  eatenAt   DateTime @map("eaten_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  food Food @relation(fields: [foodId], references: [id])
+
+  nutrients MealEntryNutrient[]
+
+  @@index([userId, eatenAt])
+  @@map("meal_entries")
+}
+
+/// Snapshot of nutrient amounts consumed per meal entry (quantity x FoodNutrient.amount)
+model MealEntryNutrient {
+  id             String   @id @default(cuid())
+  mealEntryId    String   @map("meal_entry_id")
+  nutrientId     String   @map("nutrient_id")
+  amountConsumed Decimal  @map("amount_consumed") @db.Decimal(12, 4)
+
+  mealEntry MealEntry @relation(fields: [mealEntryId], references: [id], onDelete: Cascade)
+  nutrient  Nutrient  @relation(fields: [nutrientId], references: [id])
+
+  @@unique([mealEntryId, nutrientId])
+  @@map("meal_entry_nutrients")
+}

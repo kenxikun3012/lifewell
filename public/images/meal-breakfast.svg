@@ -1,0 +1,24 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="40" cy="40" r="40" fill="#FFF3E0"/>
+  <path d="M14 50C14 42 20 36 40 36C60 36 66 42 66 50C66 52 64 54 62 54H18C16 54 14 52 14 50Z" fill="#FFE0B2"/>
+  <path d="M16 50C16 48 24 42 40 42C56 42 64 48 64 50H16Z" fill="#FFCC80"/>
+  <circle cx="24" cy="30" r="7" fill="#FFE0B2"/>
+  <circle cx="24" cy="30" r="3.5" fill="#FF8A65"/>
+  <rect x="34" y="22" width="2.5" height="20" rx="1.25" fill="#FFD54F"/>
+  <rect x="43" y="22" width="2.5" height="20" rx="1.25" fill="#FFD54F"/>
+  <rect x="52" y="22" width="2.5" height="20" rx="1.25" fill="#FFD54F"/>
+</svg>
+</｜｜DSML｜｜Now let me create the four meal image SVGs referenced in the mock data. I'll start with breakfast:
+
+<write_to_file>
+<path>public/images/meal-breakfast.svg</path>
+<content><svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="40" cy="40" r="40" fill="#FFF3E0"/>
+  <path d="M14 50C14 42 20 36 40 36C60 36 66 42 66 50C66 52 64 54 62 54H18C16 54 14 52 14 50Z" fill="#FFE0B2"/>
+  <path d="M16 50C16 48 24 42 40 42C56 42 64 48 64 50H16Z" fill="#FFCC80"/>
+  <circle cx="24" cy="30" r="7" fill="#FFE0B2"/>
+  <circle cx="24" cy="30" r="3.5" fill="#FF8A65"/>
+  <rect x="34" y="22" width="2.5" height="20" rx="1.25" fill="#FFD54F"/>
+  <rect x="43" y="22" width="2.5" height="20" rx="1.25" fill="#FFD54F"/>
+  <rect x="52" y="22" width="2.5" height="20" rx="1.25" fill="#FFD54F"/>
+</svg>
