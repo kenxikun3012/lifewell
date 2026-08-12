@@ -1,94 +1,76 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
 import Link from "next/link";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthInput from "@/components/auth/AuthInput";
 import AuthButton from "@/components/auth/AuthButton";
 import AuthDivider from "@/components/auth/AuthDivider";
-import PasswordStrengthIndicator from "@/components/auth/PasswordStrengthIndicator";
-import { useAuth } from "@/lib/auth-context";
+import { signup } from "@/app/auth/actions";
+import type { AuthState } from "@/app/auth/actions";
+
+const initialState: AuthState = {};
 
 export default function SignupPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [touched, setTouched] = useState(false);
-  const { signup } = useAuth();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!name.trim() || !email.trim() || !password) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-
-    signup({ name: name.trim(), email });
-  };
+  const [state, formAction, pending] = useActionState(signup, initialState);
 
   return (
     <AuthCard>
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-900">Create your account</h1>
+      <div className="mb-4 text-center">
+        <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
       </div>
 
-      {error && (
-        <div className="mb-5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
-          {error}
+      {state?.error && !state.checkEmail && (
+        <div className="mb-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-600" role="alert">
+          {state.error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      {state?.checkEmail && (
+        <div className="mb-3 rounded-xl bg-green-50 px-4 py-2.5 text-sm text-green-700" role="status">
+          Check your email to confirm your account before signing in.
+        </div>
+      )}
+
+      <form action={formAction} className="space-y-3.5">
         <AuthInput
           id="name"
+          name="name"
           label="Name"
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
           placeholder="John Doe"
+          autoComplete="name"
           required
         />
 
         <AuthInput
           id="email"
+          name="email"
           label="Email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           placeholder="john@example.com"
+          autoComplete="email"
           required
         />
 
         <div>
           <AuthInput
             id="password"
+            name="password"
             label="Password"
             type="password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setTouched(true);
-            }}
             placeholder="••••••••"
+            autoComplete="new-password"
             required
           />
-          <PasswordStrengthIndicator password={password} touched={touched} />
         </div>
 
-        <AuthButton type="submit" variant="primary">
-          Sign Up
+        <AuthButton type="submit" variant="primary" disabled={pending}>
+          {pending ? "Creating account..." : "Sign Up"}
         </AuthButton>
       </form>
 
-      <div className="my-6">
+      <div className="my-4">
         <AuthDivider text="or" />
       </div>
 
@@ -114,7 +96,7 @@ export default function SignupPage() {
         Sign up with Google
       </AuthButton>
 
-      <p className="mt-8 text-center text-sm text-gray-500">
+      <p className="mt-4 text-center text-sm text-gray-500">
         {"Already have an account? "}
         <Link
           href="/login"

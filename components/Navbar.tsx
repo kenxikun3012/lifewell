@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import Image from "next/image";
+
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Dashboard", href: "/dashboard" },
@@ -13,8 +14,9 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const { user, isLoggedIn, logout } = useAuth();
+  const { user, isLoggedIn, isHydrated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const showLoggedIn = isHydrated && isLoggedIn;
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -22,11 +24,16 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-              <Image src="/lifewell-logo-removebg-preview.png" alt="LifeWell Logo" width={160} height={80} />
+            <Image
+              src="/lifewell-logo-removebg-preview.png"
+              alt="LifeWell Logo"
+              width={160}
+              height={80}
+            />
           </Link>
 
           {/* Desktop Navigation */}
-          {isLoggedIn && (
+          {showLoggedIn && (
             <div className="hidden md:flex items-center gap-4">
               {navLinks.map((link) => (
                 <Link
@@ -42,10 +49,19 @@ export default function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-4">
-            {isLoggedIn ? (
+            {!isHydrated ? (
+              /* Placeholder while the stored auth state is being restored */
+              <div className="flex items-center gap-3" aria-hidden="true">
+                <span className="h-9 w-24 rounded-lg bg-gray-100 animate-pulse" />
+                <span className="h-9 w-24 rounded-lg bg-gray-100 animate-pulse" />
+              </div>
+            ) : showLoggedIn ? (
               <>
                 {/* Notification Icon */}
-                <Link href="/notifications" className="relative p-2 text-secondary-text hover:text-primary-green transition-colors rounded-full hover:bg-gray-100">
+                <Link
+                  href="/notifications"
+                  className="relative p-2 text-secondary-text hover:text-primary-green transition-colors rounded-full hover:bg-gray-100"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -147,7 +163,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && (
+      {mobileMenuOpen && isHydrated && (
         <div className="md:hidden bg-white border-t shadow-lg">
           <div className="px-4 py-4 space-y-3">
             {isLoggedIn ? (

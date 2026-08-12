@@ -4,9 +4,13 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
+  useRef,
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { logout as logoutAction } from "@/app/auth/actions";
 
 interface User {
   name: string;
@@ -16,62 +20,82 @@ interface User {
 interface AuthContextValue {
   user: User | null;
   isLoggedIn: boolean;
+  isHydrated: boolean;
   login: (user: User) => void;
   signup: (user: User) => void;
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null);
-
-const STORAGE_KEY = "lifewell_user";
-
-function readStoredUser(): User | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? (JSON.parse(stored) as User) : null;
-  } catch {
-    return null;
-  }
+interface SupabaseUser {
+  id: string;
+  email?: string | null;
+  user_metadata?: Record<string, unknown> | null;
 }
 
+const AuthContext = createContext<AuthContextValue | null>(null);
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(readStoredUser);
+  const [user, setUser] = useState<User | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const clientRef = useRef<ReturnType<typeof createClient> | null>(null);
   const router = useRouter();
 
-  const persist = useCallback((nextUser: User | null) => {
-    setUser(nextUser);
-    if (nextUser) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser));
-    } else {
-      localStorage.removeItem(STORAGE_KEY);
+  useEffect(() => {
+    const supabase = createClient();
+    clientRef.current = supabase;
+
+    let active = true;
+
+    function updateFromSession(supabaseUser: SupabaseUser | null) {
+      if (!active) return;
+      if (!supabaseUser?.email) {
+        setUser(null);
+        return;
+      }
+      setUser({
+        name:
+          (supabaseUser.user_metadata?.full_name as string) ||
+          supabaseUser.email.split("@")[0] ||
+          "User",
+        email: supabaseUser.email,
+      });
     }
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      updateFromSession(data.session?.user ?? null);
+      setIsHydrated(true);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      updateFromSession(session?.user ?? null);
+      setIsHydrated(true);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const login = useCallback(
-    (nextUser: User) => {
-      persist(nextUser);
-      router.push("/");
-    },
-    [persist, router]
-  );
-
-  const signup = useCallback(
-    (nextUser: User) => {
-      persist(nextUser);
-      router.push("/");
-    },
-    [persist, router]
-  );
-
   const logout = useCallback(() => {
-    persist(null);
-    router.push("/login");
-  }, [persist, router]);
+    void logoutAction().then(() => {
+      router.push("/login");
+    });
+  }, [router]);
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoggedIn: user !== null, login, signup, logout }}
+      value={{
+        user,
+        isLoggedIn: user !== null,
+        isHydrated,
+        login: () => {},
+        signup: () => {},
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

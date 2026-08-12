@@ -4,6 +4,7 @@ import WeeklyDateSelector from "@/components/meal-tracker/WeeklyDateSelector";
 import NutritionSummaryCard from "@/components/meal-tracker/NutritionSummaryCard";
 import MealRecordSection from "@/components/meal-tracker/MealRecordSection";
 import WaterIntakeCard from "@/components/meal-tracker/WaterIntakeCard";
+import FoodLogger from "@/components/meal-tracker/FoodLogger";
 
 export default function MealTrackerPage() {
   return (
@@ -32,8 +33,13 @@ export default function MealTrackerPage() {
             <NutritionSummaryCard />
           </div>
 
-          {/* Meal Record Section */}
+          {/* USDA Food Logger */}
           <div className="mb-8 animate-fade-in" style={{ animationDelay: "300ms" }}>
+            <FoodLogger />
+          </div>
+
+          {/* Meal Record Section */}
+          <div className="mb-8 animate-fade-in" style={{ animationDelay: "350ms" }}>
             <h2 className="mb-4 text-xl font-bold text-gray-900">
               {"Today's Meals"}
             </h2>

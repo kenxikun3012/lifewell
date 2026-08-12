@@ -17,9 +17,9 @@ export default function PasswordStrengthIndicator({
   const labelColor = ["", "#dc2626", "#f97316", "#22c55e", "#16a34a"];
 
   return (
-    <div className="mt-2">
+    <div className="mt-1">
       <p
-        className="text-xs font-medium transition-colors duration-300"
+        className="text-[11px] font-medium transition-colors duration-300"
         style={{ color: labelColor[strength.score] }}
       >
         {password.length < 8

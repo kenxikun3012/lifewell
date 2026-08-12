@@ -1,82 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
 import Link from "next/link";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthInput from "@/components/auth/AuthInput";
 import AuthButton from "@/components/auth/AuthButton";
 import AuthCheckbox from "@/components/auth/AuthCheckbox";
 import AuthDivider from "@/components/auth/AuthDivider";
-import PasswordStrengthIndicator from "@/components/auth/PasswordStrengthIndicator";
-import { useAuth } from "@/lib/auth-context";
+import { login } from "@/app/auth/actions";
+import type { AuthState } from "@/app/auth/actions";
+
+const initialState: AuthState = {};
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
-  const [error, setError] = useState("");
-  const [touched, setTouched] = useState(false);
-  const { login } = useAuth();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email.trim() || !password) {
-      setError("Please enter your email and password.");
-      return;
-    }
-
-    // For now, derive a display name from the email prefix
-    const name = email.split("@")[0].replace(/[._-]+/g, " ").trim() || "User";
-    login({ name, email });
-  };
+  const [state, formAction, pending] = useActionState(login, initialState);
 
   return (
     <AuthCard>
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-900">Login in your account</h1>
+      <div className="mb-4 text-center">
+        <h1 className="text-2xl font-bold text-gray-900">Login in your account</h1>
       </div>
 
-      {error && (
-        <div className="mb-5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
-          {error}
+      {state?.error && (
+        <div className="mb-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-600" role="alert">
+          {state.error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form action={formAction} className="space-y-3.5">
         <AuthInput
           id="email"
+          name="email"
           label="Email Address"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           placeholder="john@example.com"
+          autoComplete="email"
           required
         />
 
-        <div>
-          <AuthInput
-            id="password"
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setTouched(true);
-            }}
-            placeholder="••••••••"
-            required
-          />
-          <PasswordStrengthIndicator password={password} touched={touched} />
-        </div>
+        <AuthInput
+          id="password"
+          name="password"
+          label="Password"
+          type="password"
+          placeholder="••••••••"
+          autoComplete="current-password"
+          required
+        />
 
         <div className="flex items-center justify-between">
           <AuthCheckbox
             id="remember"
             label="Remember Me"
-            checked={remember}
-            onChange={setRemember}
+            checked={true}
+            onChange={() => {}}
           />
           <Link
             href="/forgot-password"
@@ -86,16 +63,16 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <AuthButton type="submit" variant="primary">
-          Login
+        <AuthButton type="submit" variant="primary" disabled={pending}>
+          {pending ? "Signing in..." : "Login"}
         </AuthButton>
       </form>
 
-      <div className="my-6">
+      <div className="my-4">
         <AuthDivider text="Or login with" />
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <AuthButton type="button" variant="google">
           <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none">
             <path
@@ -125,7 +102,7 @@ export default function LoginPage() {
         </AuthButton>
       </div>
 
-      <p className="mt-8 text-center text-sm text-gray-500">
+      <p className="mt-4 text-center text-sm text-gray-500">
         {"Don't have an account? "}
         <Link
           href="/signup"

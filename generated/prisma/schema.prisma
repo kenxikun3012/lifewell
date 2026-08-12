@@ -131,16 +131,21 @@ model UserTarget {
 
 /// A food entry logged by the user (meal log)
 model MealEntry {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
-  foodId    String   @map("food_id")
-  quantity  Decimal  @default(1) @db.Decimal(6, 2)
-  mealType  MealType @map("meal_type")
-  eatenAt   DateTime @map("eaten_at")
-  createdAt DateTime @default(now()) @map("created_at")
+  id                 String   @id @default(cuid())
+  userId             String   @map("user_id")
+  foodId             String?  @map("food_id")
+  foodName           String   @map("food_name")
+  foodBrand          String?  @map("food_brand")
+  source             String?  @default("usda")
+  servingDescription String?  @map("serving_description")
+  servingGrams       Decimal  @map("serving_grams") @db.Decimal(10, 3)
+  quantity           Decimal  @default(1) @db.Decimal(6, 2)
+  mealType           MealType @map("meal_type")
+  eatenAt            DateTime @map("eaten_at")
+  createdAt          DateTime @default(now()) @map("created_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  food Food @relation(fields: [foodId], references: [id])
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  food Food? @relation(fields: [foodId], references: [id])
 
   nutrients MealEntryNutrient[]
 

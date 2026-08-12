@@ -10,21 +10,21 @@ interface AuthCardProps {
 export default function AuthCard({ children }: AuthCardProps) {
   return (
     <div
-      className="flex min-h-svh flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8"
+      className="flex min-h-svh flex-col items-center justify-center px-4 py-6 sm:px-6 lg:px-8"
       style={{ backgroundColor: "#EAF7E6" }}
     >
-      <div className="flex w-full max-w-[700px] flex-col items-center">
-        <div className="mb-8">
+      <div className="flex w-full max-w-[460px] flex-col items-center">
+        <div className="mb-4">
           <Image
             src="/lifewell-logo-removebg-preview.png"
             alt="LifeWell"
-            width={250}
-            height={85}
+            width={180}
+            height={60}
             priority
           />
         </div>
 
-        <div className="w-full rounded-[24px] bg-white px-8 py-10 shadow-lg sm:px-12 sm:py-12">
+        <div className="w-full rounded-2xl bg-white px-6 py-6 shadow-lg sm:px-8 sm:py-7">
           {children}
         </div>
       </div>

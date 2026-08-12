@@ -7546,10 +7546,12 @@ export namespace Prisma {
   }
 
   export type MealEntryAvgAggregateOutputType = {
+    servingGrams: Decimal | null
     quantity: Decimal | null
   }
 
   export type MealEntrySumAggregateOutputType = {
+    servingGrams: Decimal | null
     quantity: Decimal | null
   }
 
@@ -7557,6 +7559,11 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     foodId: string | null
+    foodName: string | null
+    foodBrand: string | null
+    source: string | null
+    servingDescription: string | null
+    servingGrams: Decimal | null
     quantity: Decimal | null
     mealType: $Enums.MealType | null
     eatenAt: Date | null
@@ -7567,6 +7574,11 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     foodId: string | null
+    foodName: string | null
+    foodBrand: string | null
+    source: string | null
+    servingDescription: string | null
+    servingGrams: Decimal | null
     quantity: Decimal | null
     mealType: $Enums.MealType | null
     eatenAt: Date | null
@@ -7577,6 +7589,11 @@ export namespace Prisma {
     id: number
     userId: number
     foodId: number
+    foodName: number
+    foodBrand: number
+    source: number
+    servingDescription: number
+    servingGrams: number
     quantity: number
     mealType: number
     eatenAt: number
@@ -7586,10 +7603,12 @@ export namespace Prisma {
 
 
   export type MealEntryAvgAggregateInputType = {
+    servingGrams?: true
     quantity?: true
   }
 
   export type MealEntrySumAggregateInputType = {
+    servingGrams?: true
     quantity?: true
   }
 
@@ -7597,6 +7616,11 @@ export namespace Prisma {
     id?: true
     userId?: true
     foodId?: true
+    foodName?: true
+    foodBrand?: true
+    source?: true
+    servingDescription?: true
+    servingGrams?: true
     quantity?: true
     mealType?: true
     eatenAt?: true
@@ -7607,6 +7631,11 @@ export namespace Prisma {
     id?: true
     userId?: true
     foodId?: true
+    foodName?: true
+    foodBrand?: true
+    source?: true
+    servingDescription?: true
+    servingGrams?: true
     quantity?: true
     mealType?: true
     eatenAt?: true
@@ -7617,6 +7646,11 @@ export namespace Prisma {
     id?: true
     userId?: true
     foodId?: true
+    foodName?: true
+    foodBrand?: true
+    source?: true
+    servingDescription?: true
+    servingGrams?: true
     quantity?: true
     mealType?: true
     eatenAt?: true
@@ -7713,7 +7747,12 @@ export namespace Prisma {
   export type MealEntryGroupByOutputType = {
     id: string
     userId: string
-    foodId: string
+    foodId: string | null
+    foodName: string
+    foodBrand: string | null
+    source: string | null
+    servingDescription: string | null
+    servingGrams: Decimal
     quantity: Decimal
     mealType: $Enums.MealType
     eatenAt: Date
@@ -7743,12 +7782,17 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     foodId?: boolean
+    foodName?: boolean
+    foodBrand?: boolean
+    source?: boolean
+    servingDescription?: boolean
+    servingGrams?: boolean
     quantity?: boolean
     mealType?: boolean
     eatenAt?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    food?: boolean | FoodDefaultArgs<ExtArgs>
+    food?: boolean | MealEntry$foodArgs<ExtArgs>
     nutrients?: boolean | MealEntry$nutrientsArgs<ExtArgs>
     _count?: boolean | MealEntryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["mealEntry"]>
@@ -7757,63 +7801,83 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     foodId?: boolean
+    foodName?: boolean
+    foodBrand?: boolean
+    source?: boolean
+    servingDescription?: boolean
+    servingGrams?: boolean
     quantity?: boolean
     mealType?: boolean
     eatenAt?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    food?: boolean | FoodDefaultArgs<ExtArgs>
+    food?: boolean | MealEntry$foodArgs<ExtArgs>
   }, ExtArgs["result"]["mealEntry"]>
 
   export type MealEntrySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
     foodId?: boolean
+    foodName?: boolean
+    foodBrand?: boolean
+    source?: boolean
+    servingDescription?: boolean
+    servingGrams?: boolean
     quantity?: boolean
     mealType?: boolean
     eatenAt?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    food?: boolean | FoodDefaultArgs<ExtArgs>
+    food?: boolean | MealEntry$foodArgs<ExtArgs>
   }, ExtArgs["result"]["mealEntry"]>
 
   export type MealEntrySelectScalar = {
     id?: boolean
     userId?: boolean
     foodId?: boolean
+    foodName?: boolean
+    foodBrand?: boolean
+    source?: boolean
+    servingDescription?: boolean
+    servingGrams?: boolean
     quantity?: boolean
     mealType?: boolean
     eatenAt?: boolean
     createdAt?: boolean
   }
 
-  export type MealEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "foodId" | "quantity" | "mealType" | "eatenAt" | "createdAt", ExtArgs["result"]["mealEntry"]>
+  export type MealEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "foodId" | "foodName" | "foodBrand" | "source" | "servingDescription" | "servingGrams" | "quantity" | "mealType" | "eatenAt" | "createdAt", ExtArgs["result"]["mealEntry"]>
   export type MealEntryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    food?: boolean | FoodDefaultArgs<ExtArgs>
+    food?: boolean | MealEntry$foodArgs<ExtArgs>
     nutrients?: boolean | MealEntry$nutrientsArgs<ExtArgs>
     _count?: boolean | MealEntryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MealEntryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    food?: boolean | FoodDefaultArgs<ExtArgs>
+    food?: boolean | MealEntry$foodArgs<ExtArgs>
   }
   export type MealEntryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    food?: boolean | FoodDefaultArgs<ExtArgs>
+    food?: boolean | MealEntry$foodArgs<ExtArgs>
   }
 
   export type $MealEntryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "MealEntry"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
-      food: Prisma.$FoodPayload<ExtArgs>
+      food: Prisma.$FoodPayload<ExtArgs> | null
       nutrients: Prisma.$MealEntryNutrientPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
-      foodId: string
+      foodId: string | null
+      foodName: string
+      foodBrand: string | null
+      source: string | null
+      servingDescription: string | null
+      servingGrams: Prisma.Decimal
       quantity: Prisma.Decimal
       mealType: $Enums.MealType
       eatenAt: Date
@@ -8213,7 +8277,7 @@ export namespace Prisma {
   export interface Prisma__MealEntryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    food<T extends FoodDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FoodDefaultArgs<ExtArgs>>): Prisma__FoodClient<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    food<T extends MealEntry$foodArgs<ExtArgs> = {}>(args?: Subset<T, MealEntry$foodArgs<ExtArgs>>): Prisma__FoodClient<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     nutrients<T extends MealEntry$nutrientsArgs<ExtArgs> = {}>(args?: Subset<T, MealEntry$nutrientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealEntryNutrientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -8247,6 +8311,11 @@ export namespace Prisma {
     readonly id: FieldRef<"MealEntry", 'String'>
     readonly userId: FieldRef<"MealEntry", 'String'>
     readonly foodId: FieldRef<"MealEntry", 'String'>
+    readonly foodName: FieldRef<"MealEntry", 'String'>
+    readonly foodBrand: FieldRef<"MealEntry", 'String'>
+    readonly source: FieldRef<"MealEntry", 'String'>
+    readonly servingDescription: FieldRef<"MealEntry", 'String'>
+    readonly servingGrams: FieldRef<"MealEntry", 'Decimal'>
     readonly quantity: FieldRef<"MealEntry", 'Decimal'>
     readonly mealType: FieldRef<"MealEntry", 'MealType'>
     readonly eatenAt: FieldRef<"MealEntry", 'DateTime'>
@@ -8649,6 +8718,25 @@ export namespace Prisma {
      * Limit how many MealEntries to delete.
      */
     limit?: number
+  }
+
+  /**
+   * MealEntry.food
+   */
+  export type MealEntry$foodArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodInclude<ExtArgs> | null
+    where?: FoodWhereInput
   }
 
   /**
@@ -9876,6 +9964,11 @@ export namespace Prisma {
     id: 'id',
     userId: 'userId',
     foodId: 'foodId',
+    foodName: 'foodName',
+    foodBrand: 'foodBrand',
+    source: 'source',
+    servingDescription: 'servingDescription',
+    servingGrams: 'servingGrams',
     quantity: 'quantity',
     mealType: 'mealType',
     eatenAt: 'eatenAt',
@@ -10442,20 +10535,30 @@ export namespace Prisma {
     NOT?: MealEntryWhereInput | MealEntryWhereInput[]
     id?: StringFilter<"MealEntry"> | string
     userId?: StringFilter<"MealEntry"> | string
-    foodId?: StringFilter<"MealEntry"> | string
+    foodId?: StringNullableFilter<"MealEntry"> | string | null
+    foodName?: StringFilter<"MealEntry"> | string
+    foodBrand?: StringNullableFilter<"MealEntry"> | string | null
+    source?: StringNullableFilter<"MealEntry"> | string | null
+    servingDescription?: StringNullableFilter<"MealEntry"> | string | null
+    servingGrams?: DecimalFilter<"MealEntry"> | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFilter<"MealEntry"> | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFilter<"MealEntry"> | $Enums.MealType
     eatenAt?: DateTimeFilter<"MealEntry"> | Date | string
     createdAt?: DateTimeFilter<"MealEntry"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    food?: XOR<FoodScalarRelationFilter, FoodWhereInput>
+    food?: XOR<FoodNullableScalarRelationFilter, FoodWhereInput> | null
     nutrients?: MealEntryNutrientListRelationFilter
   }
 
   export type MealEntryOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
-    foodId?: SortOrder
+    foodId?: SortOrderInput | SortOrder
+    foodName?: SortOrder
+    foodBrand?: SortOrderInput | SortOrder
+    source?: SortOrderInput | SortOrder
+    servingDescription?: SortOrderInput | SortOrder
+    servingGrams?: SortOrder
     quantity?: SortOrder
     mealType?: SortOrder
     eatenAt?: SortOrder
@@ -10471,20 +10574,30 @@ export namespace Prisma {
     OR?: MealEntryWhereInput[]
     NOT?: MealEntryWhereInput | MealEntryWhereInput[]
     userId?: StringFilter<"MealEntry"> | string
-    foodId?: StringFilter<"MealEntry"> | string
+    foodId?: StringNullableFilter<"MealEntry"> | string | null
+    foodName?: StringFilter<"MealEntry"> | string
+    foodBrand?: StringNullableFilter<"MealEntry"> | string | null
+    source?: StringNullableFilter<"MealEntry"> | string | null
+    servingDescription?: StringNullableFilter<"MealEntry"> | string | null
+    servingGrams?: DecimalFilter<"MealEntry"> | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFilter<"MealEntry"> | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFilter<"MealEntry"> | $Enums.MealType
     eatenAt?: DateTimeFilter<"MealEntry"> | Date | string
     createdAt?: DateTimeFilter<"MealEntry"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    food?: XOR<FoodScalarRelationFilter, FoodWhereInput>
+    food?: XOR<FoodNullableScalarRelationFilter, FoodWhereInput> | null
     nutrients?: MealEntryNutrientListRelationFilter
   }, "id">
 
   export type MealEntryOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
-    foodId?: SortOrder
+    foodId?: SortOrderInput | SortOrder
+    foodName?: SortOrder
+    foodBrand?: SortOrderInput | SortOrder
+    source?: SortOrderInput | SortOrder
+    servingDescription?: SortOrderInput | SortOrder
+    servingGrams?: SortOrder
     quantity?: SortOrder
     mealType?: SortOrder
     eatenAt?: SortOrder
@@ -10502,7 +10615,12 @@ export namespace Prisma {
     NOT?: MealEntryScalarWhereWithAggregatesInput | MealEntryScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"MealEntry"> | string
     userId?: StringWithAggregatesFilter<"MealEntry"> | string
-    foodId?: StringWithAggregatesFilter<"MealEntry"> | string
+    foodId?: StringNullableWithAggregatesFilter<"MealEntry"> | string | null
+    foodName?: StringWithAggregatesFilter<"MealEntry"> | string
+    foodBrand?: StringNullableWithAggregatesFilter<"MealEntry"> | string | null
+    source?: StringNullableWithAggregatesFilter<"MealEntry"> | string | null
+    servingDescription?: StringNullableWithAggregatesFilter<"MealEntry"> | string | null
+    servingGrams?: DecimalWithAggregatesFilter<"MealEntry"> | Decimal | DecimalJsLike | number | string
     quantity?: DecimalWithAggregatesFilter<"MealEntry"> | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeWithAggregatesFilter<"MealEntry"> | $Enums.MealType
     eatenAt?: DateTimeWithAggregatesFilter<"MealEntry"> | Date | string
@@ -10990,19 +11108,29 @@ export namespace Prisma {
 
   export type MealEntryCreateInput = {
     id?: string
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutMealEntriesInput
-    food: FoodCreateNestedOneWithoutMealEntriesInput
+    food?: FoodCreateNestedOneWithoutMealEntriesInput
     nutrients?: MealEntryNutrientCreateNestedManyWithoutMealEntryInput
   }
 
   export type MealEntryUncheckedCreateInput = {
     id?: string
     userId: string
-    foodId: string
+    foodId?: string | null
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
@@ -11012,19 +11140,29 @@ export namespace Prisma {
 
   export type MealEntryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutMealEntriesNestedInput
-    food?: FoodUpdateOneRequiredWithoutMealEntriesNestedInput
+    food?: FoodUpdateOneWithoutMealEntriesNestedInput
     nutrients?: MealEntryNutrientUpdateManyWithoutMealEntryNestedInput
   }
 
   export type MealEntryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    foodId?: StringFieldUpdateOperationsInput | string
+    foodId?: NullableStringFieldUpdateOperationsInput | string | null
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11035,7 +11173,12 @@ export namespace Prisma {
   export type MealEntryCreateManyInput = {
     id?: string
     userId: string
-    foodId: string
+    foodId?: string | null
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
@@ -11044,6 +11187,11 @@ export namespace Prisma {
 
   export type MealEntryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11053,7 +11201,12 @@ export namespace Prisma {
   export type MealEntryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    foodId?: StringFieldUpdateOperationsInput | string
+    foodId?: NullableStringFieldUpdateOperationsInput | string | null
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11647,10 +11800,20 @@ export namespace Prisma {
     not?: NestedEnumMealTypeFilter<$PrismaModel> | $Enums.MealType
   }
 
+  export type FoodNullableScalarRelationFilter = {
+    is?: FoodWhereInput | null
+    isNot?: FoodWhereInput | null
+  }
+
   export type MealEntryCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     foodId?: SortOrder
+    foodName?: SortOrder
+    foodBrand?: SortOrder
+    source?: SortOrder
+    servingDescription?: SortOrder
+    servingGrams?: SortOrder
     quantity?: SortOrder
     mealType?: SortOrder
     eatenAt?: SortOrder
@@ -11658,6 +11821,7 @@ export namespace Prisma {
   }
 
   export type MealEntryAvgOrderByAggregateInput = {
+    servingGrams?: SortOrder
     quantity?: SortOrder
   }
 
@@ -11665,6 +11829,11 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     foodId?: SortOrder
+    foodName?: SortOrder
+    foodBrand?: SortOrder
+    source?: SortOrder
+    servingDescription?: SortOrder
+    servingGrams?: SortOrder
     quantity?: SortOrder
     mealType?: SortOrder
     eatenAt?: SortOrder
@@ -11675,6 +11844,11 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     foodId?: SortOrder
+    foodName?: SortOrder
+    foodBrand?: SortOrder
+    source?: SortOrder
+    servingDescription?: SortOrder
+    servingGrams?: SortOrder
     quantity?: SortOrder
     mealType?: SortOrder
     eatenAt?: SortOrder
@@ -11682,6 +11856,7 @@ export namespace Prisma {
   }
 
   export type MealEntrySumOrderByAggregateInput = {
+    servingGrams?: SortOrder
     quantity?: SortOrder
   }
 
@@ -12178,10 +12353,12 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMealEntriesInput, UserUpdateWithoutMealEntriesInput>, UserUncheckedUpdateWithoutMealEntriesInput>
   }
 
-  export type FoodUpdateOneRequiredWithoutMealEntriesNestedInput = {
+  export type FoodUpdateOneWithoutMealEntriesNestedInput = {
     create?: XOR<FoodCreateWithoutMealEntriesInput, FoodUncheckedCreateWithoutMealEntriesInput>
     connectOrCreate?: FoodCreateOrConnectWithoutMealEntriesInput
     upsert?: FoodUpsertWithoutMealEntriesInput
+    disconnect?: FoodWhereInput | boolean
+    delete?: FoodWhereInput | boolean
     connect?: FoodWhereUniqueInput
     update?: XOR<XOR<FoodUpdateToOneWithWhereWithoutMealEntriesInput, FoodUpdateWithoutMealEntriesInput>, FoodUncheckedUpdateWithoutMealEntriesInput>
   }
@@ -12525,17 +12702,27 @@ export namespace Prisma {
 
   export type MealEntryCreateWithoutUserInput = {
     id?: string
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
     createdAt?: Date | string
-    food: FoodCreateNestedOneWithoutMealEntriesInput
+    food?: FoodCreateNestedOneWithoutMealEntriesInput
     nutrients?: MealEntryNutrientCreateNestedManyWithoutMealEntryInput
   }
 
   export type MealEntryUncheckedCreateWithoutUserInput = {
     id?: string
-    foodId: string
+    foodId?: string | null
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
@@ -12603,7 +12790,12 @@ export namespace Prisma {
     NOT?: MealEntryScalarWhereInput | MealEntryScalarWhereInput[]
     id?: StringFilter<"MealEntry"> | string
     userId?: StringFilter<"MealEntry"> | string
-    foodId?: StringFilter<"MealEntry"> | string
+    foodId?: StringNullableFilter<"MealEntry"> | string | null
+    foodName?: StringFilter<"MealEntry"> | string
+    foodBrand?: StringNullableFilter<"MealEntry"> | string | null
+    source?: StringNullableFilter<"MealEntry"> | string | null
+    servingDescription?: StringNullableFilter<"MealEntry"> | string | null
+    servingGrams?: DecimalFilter<"MealEntry"> | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFilter<"MealEntry"> | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFilter<"MealEntry"> | $Enums.MealType
     eatenAt?: DateTimeFilter<"MealEntry"> | Date | string
@@ -12671,6 +12863,11 @@ export namespace Prisma {
 
   export type MealEntryCreateWithoutFoodInput = {
     id?: string
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
@@ -12682,6 +12879,11 @@ export namespace Prisma {
   export type MealEntryUncheckedCreateWithoutFoodInput = {
     id?: string
     userId: string
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
@@ -13339,18 +13541,28 @@ export namespace Prisma {
 
   export type MealEntryCreateWithoutNutrientsInput = {
     id?: string
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutMealEntriesInput
-    food: FoodCreateNestedOneWithoutMealEntriesInput
+    food?: FoodCreateNestedOneWithoutMealEntriesInput
   }
 
   export type MealEntryUncheckedCreateWithoutNutrientsInput = {
     id?: string
     userId: string
-    foodId: string
+    foodId?: string | null
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
@@ -13410,18 +13622,28 @@ export namespace Prisma {
 
   export type MealEntryUpdateWithoutNutrientsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutMealEntriesNestedInput
-    food?: FoodUpdateOneRequiredWithoutMealEntriesNestedInput
+    food?: FoodUpdateOneWithoutMealEntriesNestedInput
   }
 
   export type MealEntryUncheckedUpdateWithoutNutrientsInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    foodId?: StringFieldUpdateOperationsInput | string
+    foodId?: NullableStringFieldUpdateOperationsInput | string | null
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13471,7 +13693,12 @@ export namespace Prisma {
 
   export type MealEntryCreateManyUserInput = {
     id?: string
-    foodId: string
+    foodId?: string | null
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
@@ -13489,17 +13716,27 @@ export namespace Prisma {
 
   export type MealEntryUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    food?: FoodUpdateOneRequiredWithoutMealEntriesNestedInput
+    food?: FoodUpdateOneWithoutMealEntriesNestedInput
     nutrients?: MealEntryNutrientUpdateManyWithoutMealEntryNestedInput
   }
 
   export type MealEntryUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    foodId?: StringFieldUpdateOperationsInput | string
+    foodId?: NullableStringFieldUpdateOperationsInput | string | null
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13509,7 +13746,12 @@ export namespace Prisma {
 
   export type MealEntryUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    foodId?: StringFieldUpdateOperationsInput | string
+    foodId?: NullableStringFieldUpdateOperationsInput | string | null
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13556,6 +13798,11 @@ export namespace Prisma {
   export type MealEntryCreateManyFoodInput = {
     id?: string
     userId: string
+    foodName: string
+    foodBrand?: string | null
+    source?: string | null
+    servingDescription?: string | null
+    servingGrams: Decimal | DecimalJsLike | number | string
     quantity?: Decimal | DecimalJsLike | number | string
     mealType: $Enums.MealType
     eatenAt: Date | string
@@ -13594,6 +13841,11 @@ export namespace Prisma {
 
   export type MealEntryUpdateWithoutFoodInput = {
     id?: StringFieldUpdateOperationsInput | string
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13605,6 +13857,11 @@ export namespace Prisma {
   export type MealEntryUncheckedUpdateWithoutFoodInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13615,6 +13872,11 @@ export namespace Prisma {
   export type MealEntryUncheckedUpdateManyWithoutFoodInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    foodName?: StringFieldUpdateOperationsInput | string
+    foodBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    servingDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    servingGrams?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     mealType?: EnumMealTypeFieldUpdateOperationsInput | $Enums.MealType
     eatenAt?: DateTimeFieldUpdateOperationsInput | Date | string
