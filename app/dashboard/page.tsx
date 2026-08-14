@@ -358,7 +358,7 @@ export default function DashboardPage() {
           {/* Right: Food Image */}
           <div className="col-span-12 overflow-hidden rounded-[20px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] lg:col-span-4">
             <Image
-              src="/images/food.svg"
+              src="/images/food.webp"
               alt="Breakfast"
               width={400}
               height={400}
