@@ -1,19 +1,12 @@
-import { type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+import { auth } from "@/lib/auth/server";
 
-export async function proxy(request: NextRequest) {
-  return await updateSession(request);
-}
+export default auth.middleware({
+  loginUrl: "/login",
+});
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
-     * - icon.png (the app favicon)
-     */
-    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|icon.png).*)",
-  ],
+  // Authentication only — the /admin role check (single administrator,
+  // identified by ADMIN_EMAIL) happens server-side in app/admin/layout.tsx
+  // and independently inside every admin server action.
+  matcher: ["/account/:path*", "/admin/:path*", "/onboarding/:path*"],
 };

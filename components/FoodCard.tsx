@@ -1,21 +1,28 @@
+import Image from "next/image";
+
 interface FoodCardProps {
   title?: string;
   calories?: number;
   imagePlaceholder?: string;
+  imageUrl?: string;
 }
 
 export default function FoodCard({
   title = "Food Card Placeholder",
   calories = 0,
   imagePlaceholder = "Food Image",
+  imageUrl,
 }: FoodCardProps) {
   return (
     <div className="bg-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-      {/* Image placeholder */}
-      <div className="h-40 bg-card flex items-center justify-center">
-        <span className="text-primary-green font-medium text-sm">
-          {imagePlaceholder}
-        </span>
+      <div className="h-40 bg-card flex items-center justify-center relative">
+        {imageUrl ? (
+          <Image src={imageUrl} alt={title} fill className="object-cover" />
+        ) : (
+          <span className="text-primary-green font-medium text-sm">
+            {imagePlaceholder}
+          </span>
+        )}
       </div>
       {/* Content */}
       <div className="p-4">

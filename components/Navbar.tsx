@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { getUnreadNotificationCount } from "@/app/notifications/actions";
 import Image from "next/image";
 
 const navLinks = [
@@ -16,7 +18,24 @@ const navLinks = [
 export default function Navbar() {
   const { user, isLoggedIn, isHydrated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const showLoggedIn = isHydrated && isLoggedIn;
+  const pathname = usePathname();
+
+  // Refetching the unread count from the server on login state / route
+  // change is the "subscribe to an external system" case React's effect
+  // docs call legitimate — there's no way to know the server-side count
+  // without asking it.
+  useEffect(() => {
+    if (!showLoggedIn) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setUnreadCount(0);
+      return;
+    }
+    getUnreadNotificationCount()
+      .then(setUnreadCount)
+      .catch(() => setUnreadCount(0));
+  }, [showLoggedIn, pathname]);
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -75,7 +94,11 @@ export default function Navbar() {
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                   </svg>
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
 
                 {/* Profile icon + user name -> Account page */}

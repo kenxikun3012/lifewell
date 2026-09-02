@@ -1,19 +1,36 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Droplets, Plus } from "lucide-react";
-import { waterIntake } from "@/lib/mock-data";
+import { logWater } from "@/app/water/actions";
 import { Button } from "@/components/ui/button";
 
-export default function WaterIntakeCard() {
-  const [current, setCurrent] = useState<number>(waterIntake.current);
-  const goal = waterIntake.goal;
-  const percentage = Math.min(Math.round((current / goal) * 100), 100);
+const GLASS_ML = 200;
 
-  const addWater = () => {
-    setCurrent((prev: number) => Math.min(Math.round((prev + 0.2) * 10) / 10, goal));
-  };
+interface WaterIntakeCardProps {
+  date: string;
+  totalMl: number;
+  goalMl: number;
+  onLogged: (result: { totalMl: number; goalMl: number }) => void;
+}
+
+export default function WaterIntakeCard({ date, totalMl, goalMl, onLogged }: WaterIntakeCardProps) {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const percentage = Math.min(Math.round((totalMl / goalMl) * 100), 100);
+
+  function addWater() {
+    setError(null);
+    startTransition(async () => {
+      try {
+        const result = await logWater(GLASS_ML, date);
+        onLogged(result);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to log water.");
+      }
+    });
+  }
 
   return (
     <div className="relative overflow-hidden rounded-2xl bg-lifewell-green-light p-6 shadow-sm transition-all duration-300 hover:shadow-md">
@@ -23,9 +40,7 @@ export default function WaterIntakeCard() {
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-lifewell-green text-white shadow-md">
               <Droplets className="h-5 w-5" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-800">
-              Water Intake
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-800">Water Intake</h2>
           </div>
 
           <p className="mt-2 text-sm text-gray-600">
@@ -34,18 +49,16 @@ export default function WaterIntakeCard() {
 
           <div className="mt-3">
             <p className="text-xs font-medium text-gray-500">Daily Goal</p>
-            <p className="text-sm font-semibold text-gray-800">{goal}L</p>
+            <p className="text-sm font-semibold text-gray-800">{(goalMl / 1000).toFixed(1)}L</p>
           </div>
 
           {/* Progress bar */}
           <div className="mt-4">
             <div className="flex items-center justify-between">
               <span className="text-sm font-bold text-lifewell-green-dark">
-                {current.toFixed(1)}L / {goal}L
+                {(totalMl / 1000).toFixed(1)}L / {(goalMl / 1000).toFixed(1)}L
               </span>
-              <span className="text-xs font-medium text-gray-500">
-                {percentage}%
-              </span>
+              <span className="text-xs font-medium text-gray-500">{percentage}%</span>
             </div>
             <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-white">
               <div
@@ -72,12 +85,13 @@ export default function WaterIntakeCard() {
       {/* Add water button */}
       <div className="mt-4 flex items-center justify-between">
         <p className="text-xs text-gray-500">
-          Tap + to log a glass of water (0.2L)
+          {error ?? `Tap + to log a glass of water (${GLASS_ML}ml)`}
         </p>
         <Button
           variant="green"
           size="icon"
           onClick={addWater}
+          disabled={isPending}
           aria-label="Add water"
           className="h-10 w-10 rounded-full"
         >

@@ -1,6 +1,6 @@
 # LifeWell Database Schema
 
-**Stack:** PostgreSQL on Supabase + Prisma ORM 7
+**Stack:** PostgreSQL on Neon + Prisma ORM 7. Auth is handled by Neon Auth (Stack Auth) — see [AUTH.md](AUTH.md).
 
 ## Setup
 
@@ -27,22 +27,27 @@
    | `npm run db:validate` | Validate schema |
    | `npm run db:generate` | Generate Prisma Client |
    | `npm run db:migrate` | Create/apply dev migrations |
-   | `npm run db:deploy` | Apply migrations in production (Supabase) |
+   | `npm run db:deploy` | Apply migrations in production (Neon) |
    | `npm run db:seed` | Seed reference data |
    | `npm run db:studio` | Open Prisma Studio |
 
-4. **Portability:** The schema is **not tied to Supabase**. It uses standard PostgreSQL + Prisma. To switch providers (Neon, RDS, Railway), just change the `DATABASE_URL` in `.env`. To self-host, run the same migrations.
+4. **Portability:** The schema is **not tied to Neon**. It uses standard PostgreSQL + Prisma. To switch providers (RDS, Railway, etc.), just change the `DATABASE_URL` in `.env`. To self-host, run the same migrations.
 
 ## Models
 
-### User (`users`)
+### Profile (`profiles`)
+
+App-specific profile fields for a Neon Auth (Stack Auth) user. Identity, email, and
+credentials live in Neon Auth itself (mirrored read-only into `neon_auth.users_sync`);
+this table only holds what Neon Auth can't. `id` is the Stack Auth user id, not a
+locally generated one — there's no separate FK, the row is created lazily
+(`prisma.profile.upsert`) the first time a signed-in user needs one.
 
 | Field                 | Type          | Notes       |
 | --------------------- | ------------- | ----------- |
-| id                    | String (cuid) | PK          |
-| name                  | String        |             |
+| id                    | String        | PK — Stack Auth user id |
 | age                   | Int?          |             |
-| email                 | String        | UNIQUE      |
+| gender                | String?       |             |
 | weightKg              | Decimal(5,2)? | `weight_kg` |
 | heightCm              | Decimal(5,2)? | `height_cm` |
 | createdAt / updatedAt | DateTime      |             |
@@ -103,7 +108,7 @@ Per-user daily intake targets (optional). Falls back to `Nutrient.dailyReference
 | Field                      | Type             | Notes             |
 | -------------------------- | ---------------- | ----------------- |
 | id                         | String (cuid) PK |                   |
-| userId                     | FK -> User       | onDelete: Cascade |
+| userId                     | FK -> Profile    | onDelete: Cascade |
 | nutrientId                 | FK -> Nutrient   |                   |
 | targetAmount               | Decimal(10,2)    |                   |
 | source / sourceUrl         | String?          |                   |
@@ -116,7 +121,7 @@ A food item logged by a user.
 | Field     | Type                                              | Notes                    |
 | --------- | ------------------------------------------------- | ------------------------ |
 | id        | String (cuid) PK                                  |                          |
-| userId    | FK -> User                                        | onDelete: Cascade        |
+| userId    | FK -> Profile                                     | onDelete: Cascade        |
 | foodId    | FK -> Food                                        |                          |
 | quantity  | Decimal(6,2) default 1                            | number of servings       |
 | mealType  | `MealType` enum (BREAKFAST, LUNCH, DINNER, SNACK) |                          |
@@ -138,10 +143,10 @@ Snapshot of consumed nutrient amounts per meal entry (quantity x FoodNutrient.am
 ## Relationships
 
 ```
-User 1---N MealEntry ---N MealEntryNutrient N---1 Nutrient
-User 1---N UserTarget   N---1 Nutrient
-Food 1---N FoodNutrient N---1 Nutrient
-Food 1---N MealEntry
+Profile 1---N MealEntry ---N MealEntryNutrient N---1 Nutrient
+Profile 1---N UserTarget   N---1 Nutrient
+Food    1---N FoodNutrient N---1 Nutrient
+Food    1---N MealEntry
 ```
 
 ## Example Queries
@@ -193,4 +198,4 @@ const fallback = await prisma.nutrient.findUnique({
 - **Normalized EAV-style design** - adding a new mineral (e.g. iodine, selenium) requires **zero schema changes**; just insert a new `Nutrient` row.
 - **Indexed hot paths** - `(userId, eatenAt)` on MealEntry, `(foodId, nutrientId)` unique on FoodNutrient.
 - **Snapshot integrity** - `MealEntryNutrient` stores the computed amount at log time, so later food-catalog corrections never rewrite history.
-- **Provider-agnostic** - plain PostgreSQL schema; Supabase is just the hosting. Migration SQL is standard PostgreSQL.
+- **Provider-agnostic** - plain PostgreSQL schema; Neon is just the hosting. Migration SQL is standard PostgreSQL.

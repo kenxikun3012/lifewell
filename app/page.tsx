@@ -1,9 +1,36 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import FoodSection from "@/components/FoodSection";
+import FoodSection, { type FoodSectionItem } from "@/components/FoodSection";
 import Footer from "@/components/Footer";
+import { prisma } from "@/lib/prisma";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+async function getCategoryFoods(categoryName: string): Promise<FoodSectionItem[]> {
+  const foods = await prisma.food.findMany({
+    where: { category: { name: categoryName } },
+    orderBy: { name: "asc" },
+    take: 4,
+    select: { id: true, name: true, calories: true, imageUrl: true },
+  });
+
+  return foods.map((f) => ({
+    id: f.id,
+    name: f.name,
+    calories: Number(f.calories),
+    imageUrl: f.imageUrl,
+  }));
+}
+
+export default async function Home() {
+  const [riceGrainsFoods, meatFoods] = await Promise.all([
+    getCategoryFoods("Rice & Grains"),
+    // No literal "Protein" category exists in the admin catalog — "Meat" is
+    // the closest match. The section title stays "Protein" as marketing
+    // copy; only its backing data comes from the real Meat category.
+    getCategoryFoods("Meat"),
+  ]);
+
   return (
     <>
       <Navbar />
@@ -48,6 +75,7 @@ export default function Home() {
         {/* Rice & Grains Section */}
         <FoodSection
           title="Rice & Grains"
+          foods={riceGrainsFoods}
           showSeeMore
           showSlider
           seeMoreHref="/foods/rice-grains"
@@ -56,6 +84,7 @@ export default function Home() {
         {/* Protein Section */}
         <FoodSection
           title="Protein"
+          foods={meatFoods}
           showSeeMore
           showSlider
           seeMoreHref="/foods/protein"

@@ -1,79 +1,129 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Flame, Droplets, Beef, Wheat, Fish, Leaf } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import NutrientChart from "@/components/dashboard/NutrientChart";
+import { Flame, Droplets, Beef, Wheat, Fish } from "lucide-react";
+import { requireOnboardedUser } from "@/lib/onboarding";
+import { getLogsForDate, getWeeklySummary } from "@/app/food/actions";
+import { getUserTargets } from "@/app/targets/actions";
+import { getWaterLogsForDate } from "@/app/water/actions";
+import { getStreakData } from "@/lib/streak";
+import { todayDateString, mondayOfWeek, addDays } from "@/lib/dates";
+import type { Goal } from "@/generated/prisma/client";
 
-const chartData = [
-  { day: "Sun", value: 1.9 },
-  { day: "Mon", value: 2.0 },
-  { day: "Tue", value: 1.6 },
-  { day: "Wed", value: 2.5 },
-  { day: "Thu", value: 2.1 },
-  { day: "Fri", value: 2.0 },
-  { day: "Sat", value: 2.1 },
-];
+export const dynamic = "force-dynamic";
 
-const streakStates = ["filled", "pale", "empty"];
-const streakDays = Array.from(
-  { length: 35 },
-  () => streakStates[Math.floor(Math.random() * streakStates.length)]
-);
+const GOAL_LABELS: Record<Goal, string> = {
+  WEIGHT_LOSS: "Weight Loss",
+  WEIGHT_GAIN: "Weight Gain",
+  MUSCLE_GROWTH: "Muscle Growth",
+  FIT_BODY: "Fit Body",
+};
 
-const nutrientCards = [
-  {
-    title: "Protein",
-    bg: "#F6F7DE",
-    amount: "60 /105g",
-    percent: "22%",
-    remaining: "Remaining 45g",
-    ringPercent: 65,
-    ringColor: "#2855D8",
-    icon: Beef,
-  },
-  {
-    title: "Carbs",
-    bg: "#F8F1D9",
-    amount: "120 /260g",
-    percent: "20%",
-    remaining: "Remaining 140g",
-    ringPercent: 44,
-    ringColor: "#06b6d4",
-    icon: Wheat,
-  },
-  {
-    title: "Fats",
-    bg: "#FAF2E6",
-    amount: "35 /70g",
-    percent: "32%",
-    remaining: "Remaining 35g",
-    ringPercent: 50,
-    ringColor: "#8E5CE6",
-    icon: Fish,
-  },
-];
+function pct(consumed: number, target: number): number {
+  if (target <= 0) return 0;
+  return Math.min(100, Math.round((consumed / target) * 100));
+}
 
-export default function DashboardPage() {
-  const [activePill, setActivePill] = useState<"weekly" | "monthly">("weekly");
+export default async function DashboardPage() {
+  const dbUser = await requireOnboardedUser();
+  const today = todayDateString();
+  const yesterday = addDays(today, -1);
+  const weekStart = mondayOfWeek(new Date());
+
+  const [todayLogs, yesterdayLogs, targets, weekly, water, streak] = await Promise.all([
+    getLogsForDate(today),
+    getLogsForDate(yesterday),
+    getUserTargets(),
+    getWeeklySummary(weekStart),
+    getWaterLogsForDate(today),
+    getStreakData(dbUser.id),
+  ]);
+
+  const consumedCalories = Math.round(todayLogs.totalCalories);
+  const consumedPercent = pct(todayLogs.totalCalories, targets.calories);
+  const remainingKcal = Math.max(0, Math.round(targets.calories - todayLogs.totalCalories));
+  const remainingPercent = 100 - consumedPercent;
+
+  const changeVsYesterday =
+    yesterdayLogs.totalCalories > 0
+      ? Math.round(
+          ((todayLogs.totalCalories - yesterdayLogs.totalCalories) / yesterdayLogs.totalCalories) *
+            100
+        )
+      : null;
+
+  const macroRows = [
+    {
+      label: "Remaining",
+      value: `${remainingKcal}kcal (${remainingPercent}%)`,
+      width: `${remainingPercent}%`,
+    },
+    {
+      label: "Carbs",
+      value: `${Math.round(todayLogs.totalCarbsG * 4)}kcal / ${todayLogs.totalCarbsG.toFixed(0)}g`,
+      width: `${pct(todayLogs.totalCarbsG, targets.carbsG)}%`,
+    },
+    {
+      label: "Protein",
+      value: `${Math.round(todayLogs.totalProteinG * 4)}kcal / ${todayLogs.totalProteinG.toFixed(0)}g`,
+      width: `${pct(todayLogs.totalProteinG, targets.proteinG)}%`,
+    },
+    {
+      label: "Fat",
+      value: `${Math.round(todayLogs.totalFatG * 9)}kcal / ${todayLogs.totalFatG.toFixed(0)}g`,
+      width: `${pct(todayLogs.totalFatG, targets.fatG)}%`,
+    },
+  ];
+
+  const nutrientCards = [
+    {
+      title: "Protein",
+      bg: "#F6F7DE",
+      amount: `${todayLogs.totalProteinG.toFixed(0)} /${targets.proteinG.toFixed(0)}g`,
+      percent: pct(todayLogs.totalProteinG, targets.proteinG),
+      remaining: `Remaining ${Math.max(0, Math.round(targets.proteinG - todayLogs.totalProteinG))}g`,
+      ringColor: "#2855D8",
+      icon: Beef,
+    },
+    {
+      title: "Carbs",
+      bg: "#F8F1D9",
+      amount: `${todayLogs.totalCarbsG.toFixed(0)} /${targets.carbsG.toFixed(0)}g`,
+      percent: pct(todayLogs.totalCarbsG, targets.carbsG),
+      remaining: `Remaining ${Math.max(0, Math.round(targets.carbsG - todayLogs.totalCarbsG))}g`,
+      ringColor: "#06b6d4",
+      icon: Wheat,
+    },
+    {
+      title: "Fats",
+      bg: "#FAF2E6",
+      amount: `${todayLogs.totalFatG.toFixed(0)} /${targets.fatG.toFixed(0)}g`,
+      percent: pct(todayLogs.totalFatG, targets.fatG),
+      remaining: `Remaining ${Math.max(0, Math.round(targets.fatG - todayLogs.totalFatG))}g`,
+      ringColor: "#8E5CE6",
+      icon: Fish,
+    },
+  ];
+
+  const waterDots = Math.min(3, Math.round((water.totalMl / water.goalMl) * 3));
+
+  const monthLabel = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
+  const goalLabel = dbUser.goal ? GOAL_LABELS[dbUser.goal] : null;
 
   return (
     <div className="min-h-screen bg-[#F7F5F3]">
       <Navbar />
 
       <div className="mx-auto max-w-[1280px] px-6 py-6">
-        <h1 className="mb-5 text-4xl font-semibold text-[#222222]">
-          Nutrition Insight
-        </h1>
+        <div className="mb-5 flex flex-wrap items-center gap-3">
+          <h1 className="text-4xl font-semibold text-[#222222]">Nutrition Insight</h1>
+          {goalLabel && (
+            <span className="rounded-full bg-[#69B96A]/15 px-3 py-1 text-sm font-semibold text-[#3F8A41]">
+              Goal: {goalLabel}
+            </span>
+          )}
+        </div>
 
         {/* Top Section */}
         <section className="mb-6 grid grid-cols-12 gap-6">
@@ -84,44 +134,36 @@ export default function DashboardPage() {
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/70 text-[#69B96A]">
                   <Flame size={24} />
                 </span>
-                <h2 className="text-lg font-semibold text-[#222222]">
-                  Calories Breakdown
-                </h2>
+                <h2 className="text-lg font-semibold text-[#222222]">Calories Breakdown</h2>
               </div>
               <div className="text-right">
-                <span className="text-xs font-medium text-[#5F6368]">
-                  Consumed
-                </span>
+                <span className="text-xs font-medium text-[#5F6368]">Consumed</span>
                 <div className="my-1 flex items-center justify-end gap-2">
-                  <span className="text-3xl font-bold text-[#222222]">
-                    1350 kcal
-                  </span>
+                  <span className="text-3xl font-bold text-[#222222]">{consumedCalories} kcal</span>
                   <span className="rounded-full bg-[#69B96A] px-2.5 py-0.5 text-xs font-semibold text-white">
-                    82%
+                    {consumedPercent}%
                   </span>
                 </div>
-                <span className="text-sm font-medium text-[#69B96A]">
-                  ↑ 15% Than yesterday
-                </span>
+                {changeVsYesterday !== null && (
+                  <span
+                    className={`text-sm font-medium ${
+                      changeVsYesterday >= 0 ? "text-[#69B96A]" : "text-red-500"
+                    }`}
+                  >
+                    {changeVsYesterday >= 0 ? "↑" : "↓"} {Math.abs(changeVsYesterday)}% Than
+                    yesterday
+                  </span>
+                )}
               </div>
             </div>
 
             <div className="flex items-start gap-8">
               <div className="flex flex-1 flex-col gap-4">
-                {[
-                  { label: "Remaining", value: "800kcal (18%)", width: "18%" },
-                  { label: "Carbs", value: "240kcal / 60g", width: "60%" },
-                  { label: "Protein", value: "480kcal / 120g", width: "75%" },
-                  { label: "Fat", value: "315kcal / 35g", width: "45%" },
-                ].map((item) => (
+                {macroRows.map((item) => (
                   <div key={item.label} className="flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-[#222222]">
-                        {item.label}
-                      </span>
-                      <span className="text-sm text-[#5F6368]">
-                        {item.value}
-                      </span>
+                      <span className="text-sm font-medium text-[#222222]">{item.label}</span>
+                      <span className="text-sm text-[#5F6368]">{item.value}</span>
                     </div>
                     <div className="h-2.5 overflow-hidden rounded-full bg-[#e5e7eb]">
                       <div
@@ -134,11 +176,9 @@ export default function DashboardPage() {
               </div>
 
               <div className="flex min-w-[140px] flex-col items-center justify-center rounded-[20px] bg-white/60 p-4 text-center">
-                <span className="text-xs font-medium text-[#5F6368]">
-                  Target
-                </span>
+                <span className="text-xs font-medium text-[#5F6368]">Target</span>
                 <span className="mt-1 text-2xl font-bold text-[#222222]">
-                  2150Kcal
+                  {Math.round(targets.calories)}Kcal
                 </span>
               </div>
             </div>
@@ -153,10 +193,8 @@ export default function DashboardPage() {
                   <h2 className="mb-2 flex items-center gap-1.5 text-lg font-semibold text-[#2855D8]">
                     <Droplets size={16} /> Hydrate
                   </h2>
-                  <span className="text-[28px] font-bold text-[#222222]">
-                    1315 ml
-                  </span>
-                  <span className="text-sm text-[#5F6368]">of 1550 ml</span>
+                  <span className="text-[28px] font-bold text-[#222222]">{water.totalMl} ml</span>
+                  <span className="text-sm text-[#5F6368]">of {water.goalMl} ml</span>
                 </div>
                 <Image
                   src="/images/water-glass.svg"
@@ -167,36 +205,31 @@ export default function DashboardPage() {
                 />
               </div>
               <div className="mt-4 flex gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#8E5CE6]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-[#8E5CE6]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-[#8E5CE6]" />
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className={`h-2.5 w-2.5 rounded-full ${
+                      i < waterDots ? "bg-[#8E5CE6]" : "bg-white"
+                    }`}
+                  />
+                ))}
               </div>
             </div>
 
             {/* Streak Card */}
             <div className="rounded-[20px] bg-[#CFEFFF] p-5 shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-[#222222]">
-                  February 2026
-                </h2>
-                <div className="flex gap-1 text-xs text-[#5F6368]">
-                  <span className="cursor-pointer">◉</span>
-                  <span className="cursor-pointer">◎</span>
-                </div>
+                <h2 className="text-lg font-semibold text-[#222222]">{monthLabel}</h2>
               </div>
               <div className="my-2 text-xl font-bold text-[#222222]">
-                21 days Streaks!
+                {streak.currentStreakDays} day{streak.currentStreakDays === 1 ? "" : "s"} Streak!
               </div>
               <div className="grid grid-cols-7 grid-rows-5 gap-2">
-                {streakDays.map((state, i) => (
+                {streak.grid.map((state, i) => (
                   <span
                     key={i}
                     className={`aspect-square w-full rounded-full ${
-                      state === "filled"
-                        ? "bg-[#2855D8]"
-                        : state === "pale"
-                        ? "bg-[#BFDBFE]"
-                        : "bg-white"
+                      state === "filled" ? "bg-[#2855D8]" : "bg-white"
                     }`}
                   />
                 ))}
@@ -217,143 +250,37 @@ export default function DashboardPage() {
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/70">
                   <card.icon size={24} />
                 </span>
-                <span className="flex-1 text-lg font-semibold text-[#222222]">
-                  {card.title}
-                </span>
+                <span className="flex-1 text-lg font-semibold text-[#222222]">{card.title}</span>
                 <span className="rounded-full bg-white/70 px-2 py-0.5 text-xs font-semibold text-[#5F6368]">
-                  {card.percent}
+                  {card.percent}%
                 </span>
               </div>
               <div className="my-4 flex items-center justify-between">
-                <div className="text-2xl font-bold text-[#222222]">
-                  {card.amount}
-                </div>
+                <div className="text-2xl font-bold text-[#222222]">{card.amount}</div>
                 <div
                   className="flex h-[72px] w-[72px] items-center justify-center rounded-full"
                   style={{
-                    background: `conic-gradient(${card.ringColor} ${card.ringPercent}%, #e5e7eb ${card.ringPercent}%)`,
+                    background: `conic-gradient(${card.ringColor} ${card.percent}%, #e5e7eb ${card.percent}%)`,
                   }}
                 >
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white">
-                    <span className="text-sm font-bold text-[#222222]">
-                      {card.ringPercent}%
-                    </span>
+                    <span className="text-sm font-bold text-[#222222]">{card.percent}%</span>
                   </div>
                 </div>
               </div>
-              <div className="text-sm font-medium text-[#5F6368]">
-                {card.remaining}
-              </div>
+              <div className="text-sm font-medium text-[#5F6368]">{card.remaining}</div>
             </div>
           ))}
         </section>
 
         {/* Bottom Section */}
         <section className="grid grid-cols-12 gap-6">
-          {/* Nutrition Chart Card */}
-          <div className="col-span-12 rounded-[20px] bg-[#DDF8FF] p-5 shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] lg:col-span-8">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#69B96A] text-white">
-                  <Leaf size={20} />
-                </span>
-                <h2 className="text-lg font-semibold text-[#222222]">
-                  Nutrients Gained
-                </h2>
-              </div>
-              <div className="flex gap-1 rounded-full bg-white/70 p-1">
-                <button
-                  onClick={() => setActivePill("weekly")}
-                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-                    activePill === "weekly"
-                      ? "bg-white text-[#222222] shadow-sm"
-                      : "text-[#5F6368]"
-                  }`}
-                >
-                  Weekly
-                </button>
-                <button
-                  onClick={() => setActivePill("monthly")}
-                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-                    activePill === "monthly"
-                      ? "bg-white text-[#222222] shadow-sm"
-                      : "text-[#5F6368]"
-                  }`}
-                >
-                  Monthly
-                </button>
-              </div>
-            </div>
-
-            <div className="mb-4 flex gap-8">
-              <div className="flex flex-col">
-                <span className="text-xs font-medium text-[#5F6368]">
-                  Total Calories
-                </span>
-                <span className="text-xl font-bold text-[#222222]">
-                  3.045 kcal
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-medium text-[#5F6368]">
-                  Daily Avg
-                </span>
-                <span className="text-xl font-bold text-[#222222]">
-                  1.750 kcal
-                </span>
-              </div>
-            </div>
-
-            <div className="w-full overflow-x-auto">
-              <div className="min-w-[400px]">
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart
-                    data={chartData}
-                    margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                  >
-                    <XAxis
-                      dataKey="day"
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fill: "#5F6368", fontSize: 12 }}
-                    />
-                    <YAxis
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fill: "#5F6368", fontSize: 12 }}
-                    />
-                    <Tooltip cursor={{ fill: "rgba(0,0,0,0.05)" }} />
-                    <Bar
-                      dataKey="value"
-                      radius={[8, 8, 0, 0]}
-                      fill="#7dd3fc"
-                      barSize={32}
-                      shape={(props: {
-                        x?: number;
-                        y?: number;
-                        width?: number;
-                        height?: number;
-                        index?: number;
-                      }) => {
-                        const { x, y, width, height, index } = props;
-                        const isWed = chartData[index ?? 0]?.day === "Wed";
-                        return (
-                          <rect
-                            x={x}
-                            y={y}
-                            width={width}
-                            height={height}
-                            rx={8}
-                            fill={isWed ? "#2855D8" : "#7dd3fc"}
-                          />
-                        );
-                      }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
+          <NutrientChart
+            days={weekly.days}
+            totalCalories={weekly.totalCalories}
+            dailyAvgCalories={weekly.dailyAvgCalories}
+            todayDate={today}
+          />
 
           {/* Right: Food Image */}
           <div className="col-span-12 overflow-hidden rounded-[20px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] lg:col-span-4">

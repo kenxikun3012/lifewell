@@ -1,16 +1,29 @@
-"use client";
-
-import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import { Pencil } from "lucide-react";
+import ProfileForm from "@/components/account/ProfileForm";
+import TargetsForm from "@/components/account/TargetsForm";
+import { requireOnboardedUser } from "@/lib/onboarding";
+import { getSession } from "@/lib/session";
+import type { Goal, ActivityLevel } from "@/generated/prisma/client";
 
-export default function AccountInfo() {
-  const [firstName, setFirstName] = useState("James");
-  const [lastName, setLastName] = useState("Potter");
-  const [email, setEmail] = useState("jamespotter@gmail.com");
-  const [phone, setPhone] = useState("(+959) *********");
-  const [ageHeight, setAgeHeight] = useState("55 years old / 5 ft 2 in");
-  const [genderWeight, setGenderWeight] = useState("Male / 120lb");
+export const dynamic = "force-dynamic";
+
+const GOAL_LABELS: Record<Goal, string> = {
+  WEIGHT_LOSS: "Weight Loss",
+  WEIGHT_GAIN: "Weight Gain",
+  MUSCLE_GROWTH: "Muscle Growth",
+  FIT_BODY: "Fit Body",
+};
+
+const ACTIVITY_LABELS: Record<ActivityLevel, string> = {
+  SEDENTARY: "Sedentary",
+  LIGHTLY_ACTIVE: "Lightly active",
+  ACTIVE: "Active",
+  VERY_ACTIVE: "Very active",
+};
+
+export default async function AccountPage() {
+  const profile = await requireOnboardedUser();
+  const session = await getSession();
 
   return (
     <div className="bg-white min-h-screen">
@@ -22,73 +35,37 @@ export default function AccountInfo() {
 
           <div className="w-28 h-28 rounded-xl bg-gray-200 mb-8"></div>
 
-          <div className="grid md:grid-cols-2 gap-x-16 gap-y-6">
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <label className="text-sm font-semibold text-gray-600">First Name</label>
-                <button className="flex items-center gap-1 text-sm text-gray-500">
-                  <Pencil size={14} />
-                  Edit
-                </button>
-              </div>
-              <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                className="border rounded px-3 py-2 w-full"
-              />
-            </div>
+          <ProfileForm
+            name={session?.user.name ?? ""}
+            email={session?.user.email ?? ""}
+            age={profile.age}
+            gender={profile.gender}
+            weightKg={profile.weightKg ? Number(profile.weightKg) : null}
+            heightCm={profile.heightCm ? Number(profile.heightCm) : null}
+          />
 
-            <div>
-              <label className="text-sm font-semibold text-gray-600 block mb-1">Last Name</label>
-              <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                className="border rounded px-3 py-2 w-full"
-              />
+          {(profile.goal || profile.activityLevel) && (
+            <div className="mt-6 flex flex-wrap gap-2 border-t border-gray-100 pt-6">
+              {profile.goal && (
+                <span className="rounded-full bg-primary-green/10 px-3 py-1 text-sm font-semibold text-primary-green">
+                  Goal: {GOAL_LABELS[profile.goal]}
+                </span>
+              )}
+              {profile.activityLevel && (
+                <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-600">
+                  Activity: {ACTIVITY_LABELS[profile.activityLevel]}
+                </span>
+              )}
             </div>
+          )}
+        </div>
 
-            <div>
-              <label className="text-sm font-semibold text-gray-600 block mb-1">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="border rounded px-3 py-2 w-full"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-semibold text-gray-600 block mb-1">Phone Number</label>
-              <input
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="border rounded px-3 py-2 w-full"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-semibold text-gray-600 block mb-1">Age / Height</label>
-              <input
-                type="text"
-                value={ageHeight}
-                onChange={(e) => setAgeHeight(e.target.value)}
-                className="border rounded px-3 py-2 w-full"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-semibold text-gray-600 block mb-1">Gender / Weight</label>
-              <input
-                type="text"
-                value={genderWeight}
-                onChange={(e) => setGenderWeight(e.target.value)}
-                className="border rounded px-3 py-2 w-full"
-              />
-            </div>
-          </div>
+        <div className="mt-8 rounded-2xl border border-gray-200 p-10">
+          <h2 className="text-2xl font-bold mb-2">Nutrition Targets</h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Your daily calorie and macro goals, used across the dashboard and meal tracker.
+          </p>
+          <TargetsForm />
         </div>
       </div>
     </div>

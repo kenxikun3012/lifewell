@@ -1,11 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@/lib/auth/server";
+import { resolvePostAuthPath } from "@/lib/onboarding";
 
 export interface AuthState {
   error?: string;
-  checkEmail?: boolean;
 }
 
 export async function login(
@@ -19,18 +19,13 @@ export async function login(
     return { error: "Please enter your email and password." };
   }
 
-  const supabase = await createClient();
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  const { error } = await auth.signIn.email({ email, password });
 
   if (error) {
-    return { error: error.message };
+    return { error: error.message || "Failed to sign in. Try again." };
   }
 
-  redirect("/dashboard");
+  redirect(await resolvePostAuthPath());
 }
 
 export async function signup(
@@ -49,29 +44,16 @@ export async function signup(
     return { error: "Password must be at least 8 characters." };
   }
 
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { full_name: name },
-    },
-  });
+  const { error } = await auth.signUp.email({ name, email, password });
 
   if (error) {
-    return { error: error.message };
+    return { error: error.message || "Failed to create account." };
   }
 
-  if (!data.session) {
-    return { checkEmail: true };
-  }
-
-  redirect("/dashboard");
+  redirect(await resolvePostAuthPath());
 }
 
 export async function logout(): Promise<void> {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
+  await auth.signOut();
   redirect("/login");
 }

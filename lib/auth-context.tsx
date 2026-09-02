@@ -1,16 +1,8 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import { logout as logoutAction } from "@/app/auth/actions";
+import { createContext, useCallback, useContext, useEffect, useRef } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { authClient } from "@/lib/auth/client";
 
 interface User {
   name: string;
@@ -26,62 +18,35 @@ interface AuthContextValue {
   logout: () => void;
 }
 
-interface SupabaseUser {
-  id: string;
-  email?: string | null;
-  user_metadata?: Record<string, unknown> | null;
-}
-
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isHydrated, setIsHydrated] = useState(false);
-  const clientRef = useRef<ReturnType<typeof createClient> | null>(null);
+  const { data: session, isPending, refetch } = authClient.useSession();
   const router = useRouter();
+  const pathname = usePathname();
 
+  // Server actions (login/signup/logout) set the session cookie server-side
+  // and redirect — but that's a client-side route transition, so this
+  // client-only session store (initialized before the login happened) never
+  // learns the cookie changed on its own. Without this, the navbar shows
+  // "logged out" until a hard refresh. Refetch whenever the route changes.
+  const lastPathname = useRef(pathname);
   useEffect(() => {
-    const supabase = createClient();
-    clientRef.current = supabase;
-
-    let active = true;
-
-    function updateFromSession(supabaseUser: SupabaseUser | null) {
-      if (!active) return;
-      if (!supabaseUser?.email) {
-        setUser(null);
-        return;
-      }
-      setUser({
-        name:
-          (supabaseUser.user_metadata?.full_name as string) ||
-          supabaseUser.email.split("@")[0] ||
-          "User",
-        email: supabaseUser.email,
-      });
+    if (lastPathname.current !== pathname) {
+      lastPathname.current = pathname;
+      refetch();
     }
+  }, [pathname, refetch]);
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (!active) return;
-      updateFromSession(data.session?.user ?? null);
-      setIsHydrated(true);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      updateFromSession(session?.user ?? null);
-      setIsHydrated(true);
-    });
-
-    return () => {
-      active = false;
-      subscription.unsubscribe();
-    };
-  }, []);
+  const user: User | null = session?.user?.email
+    ? {
+        name: session.user.name || session.user.email.split("@")[0] || "User",
+        email: session.user.email,
+      }
+    : null;
 
   const logout = useCallback(() => {
-    void logoutAction().then(() => {
+    void authClient.signOut().then(() => {
       router.push("/login");
     });
   }, [router]);
@@ -91,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         isLoggedIn: user !== null,
-        isHydrated,
+        isHydrated: !isPending,
         login: () => {},
         signup: () => {},
         logout,

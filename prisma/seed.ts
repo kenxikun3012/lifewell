@@ -1,21 +1,13 @@
 import "dotenv/config";
-import { PrismaClient, FoodCategory } from "../generated/prisma/client";
+import { PrismaClient } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { calculateTargets } from "../lib/targets-calculator";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
 });
 
 const prisma = new PrismaClient({ adapter });
-
-type SeedFood = {
-  name: string;
-  category: FoodCategory;
-  servingSize: number;
-  servingUnit: string;
-  nutrients: { code: string; amount: number }[];
-};
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -124,394 +116,205 @@ async function main() {
     },
   ];
 
-  const nutrientRecords: Record<string, string> = {};
   for (const nutrient of nutrients) {
-    const record = await prisma.nutrient.upsert({
+    await prisma.nutrient.upsert({
       where: { code: nutrient.code },
       update: nutrient,
       create: nutrient,
     });
-    nutrientRecords[nutrient.code] = record.id;
     console.log(`  ✓ Nutrient: ${nutrient.name}`);
   }
 
-  // 2. Seed Foods + FoodNutrients (per-serving values with USDA references)
-  const foods: SeedFood[] = [
-    // Rice & Grains
-    {
-      name: "White Rice (cooked)",
-      category: "RICE_AND_GRAINS",
-      servingSize: 158,
-      servingUnit: "g",
-      nutrients: [
-        { code: "calories", amount: 206 },
-        { code: "protein_g", amount: 4.3 },
-        { code: "carbs_g", amount: 44.5 },
-        { code: "fat_g", amount: 0.4 },
-        { code: "sodium_mg", amount: 2 },
-        { code: "potassium_mg", amount: 55 },
-        { code: "calcium_mg", amount: 12 },
-        { code: "iron_mg", amount: 1.9 },
-        { code: "magnesium_mg", amount: 19 },
-        { code: "zinc_mg", amount: 0.9 },
-      ],
-    },
-    {
-      name: "Brown Rice (cooked)",
-      category: "RICE_AND_GRAINS",
-      servingSize: 195,
-      servingUnit: "g",
-      nutrients: [
-        { code: "calories", amount: 218 },
-        { code: "protein_g", amount: 4.5 },
-        { code: "carbs_g", amount: 45.8 },
-        { code: "fat_g", amount: 1.6 },
-        { code: "sodium_mg", amount: 7 },
-        { code: "potassium_mg", amount: 154 },
-        { code: "calcium_mg", amount: 20 },
-        { code: "iron_mg", amount: 1.0 },
-        { code: "magnesium_mg", amount: 84 },
-        { code: "zinc_mg", amount: 1.2 },
-      ],
-    },
-    {
-      name: "Quinoa (cooked)",
-      category: "RICE_AND_GRAINS",
-      servingSize: 185,
-      servingUnit: "g",
-      nutrients: [
-        { code: "calories", amount: 222 },
-        { code: "protein_g", amount: 8.1 },
-        { code: "carbs_g", amount: 39.4 },
-        { code: "fat_g", amount: 3.6 },
-        { code: "sodium_mg", amount: 13 },
-        { code: "potassium_mg", amount: 318 },
-        { code: "calcium_mg", amount: 32 },
-        { code: "iron_mg", amount: 2.8 },
-        { code: "magnesium_mg", amount: 118 },
-        { code: "zinc_mg", amount: 2.0 },
-      ],
-    },
-    {
-      name: "Oats (cooked)",
-      category: "RICE_AND_GRAINS",
-      servingSize: 234,
-      servingUnit: "g",
-      nutrients: [
-        { code: "calories", amount: 166 },
-        { code: "protein_g", amount: 5.9 },
-        { code: "carbs_g", amount: 28.1 },
-        { code: "fat_g", amount: 3.6 },
-        { code: "sodium_mg", amount: 115 },
-        { code: "potassium_mg", amount: 164 },
-        { code: "calcium_mg", amount: 21 },
-        { code: "iron_mg", amount: 2.1 },
-        { code: "magnesium_mg", amount: 63 },
-        { code: "zinc_mg", amount: 1.4 },
-      ],
-    },
-    {
-      name: "Pasta (cooked)",
-      category: "RICE_AND_GRAINS",
-      servingSize: 140,
-      servingUnit: "g",
-      nutrients: [
-        { code: "calories", amount: 221 },
-        { code: "protein_g", amount: 8.1 },
-        { code: "carbs_g", amount: 43.2 },
-        { code: "fat_g", amount: 1.3 },
-        { code: "sodium_mg", amount: 316 },
-        { code: "potassium_mg", amount: 61 },
-        { code: "calcium_mg", amount: 10 },
-        { code: "iron_mg", amount: 2.5 },
-        { code: "magnesium_mg", amount: 26 },
-        { code: "zinc_mg", amount: 0.7 },
-      ],
-    },
-    {
-      name: "Bread (1 slice, whole wheat)",
-      category: "RICE_AND_GRAINS",
-      servingSize: 32,
-      servingUnit: "slice",
-      nutrients: [
-        { code: "calories", amount: 81 },
-        { code: "protein_g", amount: 4.0 },
-        { code: "carbs_g", amount: 13.8 },
-        { code: "fat_g", amount: 1.1 },
-        { code: "sodium_mg", amount: 146 },
-        { code: "potassium_mg", amount: 69 },
-        { code: "calcium_mg", amount: 40 },
-        { code: "iron_mg", amount: 1.0 },
-        { code: "magnesium_mg", amount: 23 },
-        { code: "zinc_mg", amount: 0.6 },
-      ],
-    },
-    // Protein
-    {
-      name: "Chicken Breast (grilled)",
-      category: "PROTEIN",
-      servingSize: 100,
-      servingUnit: "g",
-      nutrients: [
-        { code: "calories", amount: 165 },
-        { code: "protein_g", amount: 31.0 },
-        { code: "carbs_g", amount: 0 },
-        { code: "fat_g", amount: 3.6 },
-        { code: "sodium_mg", amount: 74 },
-        { code: "potassium_mg", amount: 256 },
-        { code: "calcium_mg", amount: 15 },
-        { code: "iron_mg", amount: 1.0 },
-        { code: "magnesium_mg", amount: 29 },
-        { code: "zinc_mg", amount: 1.0 },
-      ],
-    },
-    {
-      name: "Salmon (cooked)",
-      category: "PROTEIN",
-      servingSize: 100,
-      servingUnit: "g",
-      nutrients: [
-        { code: "calories", amount: 208 },
-        { code: "protein_g", amount: 20.0 },
-        { code: "carbs_g", amount: 0 },
-        { code: "fat_g", amount: 13.0 },
-        { code: "sodium_mg", amount: 59 },
-        { code: "potassium_mg", amount: 363 },
-        { code: "calcium_mg", amount: 11 },
-        { code: "iron_mg", amount: 0.5 },
-        { code: "magnesium_mg", amount: 27 },
-        { code: "zinc_mg", amount: 0.4 },
-      ],
-    },
-    {
-      name: "Egg (1 large, boiled)",
-      category: "PROTEIN",
-      servingSize: 50,
-      servingUnit: "egg",
-      nutrients: [
-        { code: "calories", amount: 78 },
-        { code: "protein_g", amount: 6.3 },
-        { code: "carbs_g", amount: 0.6 },
-        { code: "fat_g", amount: 5.3 },
-        { code: "sodium_mg", amount: 62 },
-        { code: "potassium_mg", amount: 63 },
-        { code: "calcium_mg", amount: 25 },
-        { code: "iron_mg", amount: 0.6 },
-        { code: "magnesium_mg", amount: 6 },
-        { code: "zinc_mg", amount: 0.5 },
-      ],
-    },
-    {
-      name: "Tofu (firm)",
-      category: "PROTEIN",
-      servingSize: 100,
-      servingUnit: "g",
-      nutrients: [
-        { code: "calories", amount: 76 },
-        { code: "protein_g", amount: 8.1 },
-        { code: "carbs_g", amount: 1.9 },
-        { code: "fat_g", amount: 4.8 },
-        { code: "sodium_mg", amount: 7 },
-        { code: "potassium_mg", amount: 121 },
-        { code: "calcium_mg", amount: 201 },
-        { code: "iron_mg", amount: 1.6 },
-        { code: "magnesium_mg", amount: 37 },
-        { code: "zinc_mg", amount: 1.0 },
-      ],
-    },
-    {
-      name: "Greek Yogurt (plain, nonfat)",
-      category: "PROTEIN",
-      servingSize: 170,
-      servingUnit: "g",
-      nutrients: [
-        { code: "calories", amount: 100 },
-        { code: "protein_g", amount: 17.0 },
-        { code: "carbs_g", amount: 6.0 },
-        { code: "fat_g", amount: 0.7 },
-        { code: "sodium_mg", amount: 70 },
-        { code: "potassium_mg", amount: 220 },
-        { code: "calcium_mg", amount: 190 },
-        { code: "iron_mg", amount: 0.1 },
-        { code: "magnesium_mg", amount: 19 },
-        { code: "zinc_mg", amount: 0.7 },
-      ],
-    },
-    {
-      name: "Beef (ground, 90% lean, cooked)",
-      category: "PROTEIN",
-      servingSize: 100,
-      servingUnit: "g",
-      nutrients: [
-        { code: "calories", amount: 250 },
-        { code: "protein_g", amount: 26.0 },
-        { code: "carbs_g", amount: 0 },
-        { code: "fat_g", amount: 15.0 },
-        { code: "sodium_mg", amount: 72 },
-        { code: "potassium_mg", amount: 290 },
-        { code: "calcium_mg", amount: 10 },
-        { code: "iron_mg", amount: 2.7 },
-        { code: "magnesium_mg", amount: 22 },
-        { code: "zinc_mg", amount: 5.3 },
-      ],
-    },
-    // Fruits
-    {
-      name: "Apple (medium)",
-      category: "FRUIT",
-      servingSize: 182,
-      servingUnit: "fruit",
-      nutrients: [
-        { code: "calories", amount: 95 },
-        { code: "protein_g", amount: 0.5 },
-        { code: "carbs_g", amount: 25.1 },
-        { code: "fat_g", amount: 0.3 },
-        { code: "sodium_mg", amount: 2 },
-        { code: "potassium_mg", amount: 195 },
-        { code: "calcium_mg", amount: 11 },
-        { code: "iron_mg", amount: 0.2 },
-        { code: "magnesium_mg", amount: 9 },
-        { code: "zinc_mg", amount: 0.1 },
-      ],
-    },
-    {
-      name: "Banana (medium)",
-      category: "FRUIT",
-      servingSize: 118,
-      servingUnit: "fruit",
-      nutrients: [
-        { code: "calories", amount: 105 },
-        { code: "protein_g", amount: 1.3 },
-        { code: "carbs_g", amount: 27.0 },
-        { code: "fat_g", amount: 0.4 },
-        { code: "sodium_mg", amount: 1 },
-        { code: "potassium_mg", amount: 422 },
-        { code: "calcium_mg", amount: 6 },
-        { code: "iron_mg", amount: 0.3 },
-        { code: "magnesium_mg", amount: 32 },
-        { code: "zinc_mg", amount: 0.2 },
-      ],
-    },
-    {
-      name: "Orange (medium)",
-      category: "FRUIT",
-      servingSize: 131,
-      servingUnit: "fruit",
-      nutrients: [
-        { code: "calories", amount: 62 },
-        { code: "protein_g", amount: 1.2 },
-        { code: "carbs_g", amount: 15.4 },
-        { code: "fat_g", amount: 0.2 },
-        { code: "sodium_mg", amount: 0 },
-        { code: "potassium_mg", amount: 237 },
-        { code: "calcium_mg", amount: 52 },
-        { code: "iron_mg", amount: 0.1 },
-        { code: "magnesium_mg", amount: 13 },
-        { code: "zinc_mg", amount: 0.1 },
-      ],
-    },
-    // Dairy
-    {
-      name: "Milk (1 cup, whole)",
-      category: "DAIRY",
-      servingSize: 244,
-      servingUnit: "cup",
-      nutrients: [
-        { code: "calories", amount: 149 },
-        { code: "protein_g", amount: 7.7 },
-        { code: "carbs_g", amount: 11.7 },
-        { code: "fat_g", amount: 8.0 },
-        { code: "sodium_mg", amount: 105 },
-        { code: "potassium_mg", amount: 322 },
-        { code: "calcium_mg", amount: 276 },
-        { code: "iron_mg", amount: 0.1 },
-        { code: "magnesium_mg", amount: 24 },
-        { code: "zinc_mg", amount: 1.0 },
-      ],
-    },
-    {
-      name: "Cheese (1 slice, cheddar)",
-      category: "DAIRY",
-      servingSize: 28,
-      servingUnit: "slice",
-      nutrients: [
-        { code: "calories", amount: 113 },
-        { code: "protein_g", amount: 6.4 },
-        { code: "carbs_g", amount: 0.9 },
-        { code: "fat_g", amount: 9.3 },
-        { code: "sodium_mg", amount: 176 },
-        { code: "potassium_mg", amount: 22 },
-        { code: "calcium_mg", amount: 202 },
-        { code: "iron_mg", amount: 0.1 },
-        { code: "magnesium_mg", amount: 8 },
-        { code: "zinc_mg", amount: 0.9 },
-      ],
-    },
-    // Nuts & Seeds
-    {
-      name: "Almonds (1 oz)",
-      category: "NUTS_AND_SEEDS",
-      servingSize: 28,
-      servingUnit: "oz",
-      nutrients: [
-        { code: "calories", amount: 164 },
-        { code: "protein_g", amount: 6.0 },
-        { code: "carbs_g", amount: 6.1 },
-        { code: "fat_g", amount: 14.2 },
-        { code: "sodium_mg", amount: 0 },
-        { code: "potassium_mg", amount: 208 },
-        { code: "calcium_mg", amount: 76 },
-        { code: "iron_mg", amount: 1.0 },
-        { code: "magnesium_mg", amount: 76 },
-        { code: "zinc_mg", amount: 0.9 },
-      ],
-    },
+  // 2. Seed initial food categories
+  const categories = [
+    "Myanmar Foods",
+    "Rice & Grains",
+    "Meat",
+    "Fish & Seafood",
+    "Vegetables",
+    "Fruits",
+    "Drinks",
+    "Snacks",
   ];
 
-  for (const food of foods) {
-    const { nutrients, ...foodData } = food;
-
-    const existing = await prisma.food.findFirst({
-      where: { name: foodData.name },
+  const categoryIds: Record<string, string> = {};
+  for (const name of categories) {
+    const category = await prisma.category.upsert({
+      where: { name },
+      update: {},
+      create: { name },
     });
+    categoryIds[name] = category.id;
+    console.log(`  ✓ Category: ${name}`);
+  }
 
-    let foodId: string;
-    if (existing) {
-      foodId = existing.id;
-      await prisma.food.update({ where: { id: foodId }, data: foodData });
-    } else {
-      const created = await prisma.food.create({ data: foodData });
-      foodId = created.id;
-    }
+  // 3. Seed a handful of admin-catalog Foods (per 100g), so pages that read
+  // the real Food/Category catalog (e.g. the home page) have something to
+  // show. Images point at bundled /public assets — real ImageKit-hosted
+  // images take over once the admin adds real foods.
+  const placeholderImages = ["/images/food.svg", "/images/healthy-food.svg", "/images/food.webp"];
+  const foods = [
+    { name: "White Rice", burmeseName: "ထမင်းဖြူ", category: "Rice & Grains", calories: 130, protein: 2.4, carbohydrates: 28, fat: 0.3 },
+    { name: "Brown Rice", burmeseName: "ဆန်နီထမင်း", category: "Rice & Grains", calories: 123, protein: 2.6, carbohydrates: 26, fat: 1 },
+    { name: "Fried Rice", burmeseName: "ထမင်းကြော်", category: "Rice & Grains", calories: 168, protein: 4, carbohydrates: 25, fat: 6 },
+    { name: "Naan Bread", burmeseName: "နံပြား", category: "Rice & Grains", calories: 310, protein: 9, carbohydrates: 50, fat: 8 },
+    { name: "Chicken Curry", burmeseName: "ကြက်သားဟင်း", category: "Meat", calories: 165, protein: 14, carbohydrates: 5, fat: 10 },
+    { name: "Beef Stew", burmeseName: "အမဲသားဟင်း", category: "Meat", calories: 150, protein: 13, carbohydrates: 5, fat: 9 },
+    { name: "Pork Belly", burmeseName: "ဝက်သားအုပ်", category: "Meat", calories: 518, protein: 9, carbohydrates: 0, fat: 53 },
+    { name: "Grilled Chicken Breast", burmeseName: "ကင်ကြက်သားရင်သား", category: "Meat", calories: 165, protein: 31, carbohydrates: 0, fat: 3.6 },
+    { name: "Mohinga", burmeseName: "မုန့်ဟင်းခါး", category: "Myanmar Foods", calories: 110, protein: 6, carbohydrates: 15, fat: 3 },
+    { name: "Shan Noodles", burmeseName: "ရှမ်းခေါက်ဆွဲ", category: "Myanmar Foods", calories: 140, protein: 5, carbohydrates: 22, fat: 4 },
+    { name: "Apple", burmeseName: "ပန်းသီး", category: "Fruits", calories: 52, protein: 0.3, carbohydrates: 14, fat: 0.2 },
+    { name: "Banana", burmeseName: "ငှက်ပျောသီး", category: "Fruits", calories: 89, protein: 1.1, carbohydrates: 23, fat: 0.3 },
+    { name: "Steamed Broccoli", burmeseName: "ဘရိုကိုလီပေါင်း", category: "Vegetables", calories: 35, protein: 2.4, carbohydrates: 7, fat: 0.4 },
+    { name: "Orange Juice", burmeseName: "လိမ္မော်ရည်", category: "Drinks", calories: 45, protein: 0.7, carbohydrates: 10, fat: 0.2 },
+    { name: "Roasted Peanuts", burmeseName: "မြေပဲကြော်", category: "Snacks", calories: 567, protein: 26, carbohydrates: 16, fat: 49 },
+    { name: "Grilled Fish", burmeseName: "ငါးကင်", category: "Fish & Seafood", calories: 140, protein: 24, carbohydrates: 0, fat: 5 },
+  ];
 
-    // Upsert each FoodNutrient row
-    for (const nutrient of nutrients) {
-      const nutrientId = nutrientRecords[nutrient.code];
-      await prisma.foodNutrient.upsert({
-        where: {
-          foodId_nutrientId: {
-            foodId,
-            nutrientId,
+  for (const [i, food] of foods.entries()) {
+    const { category, ...data } = food;
+    await prisma.food.upsert({
+      where: { name: data.name },
+      update: { ...data, categoryId: categoryIds[category] },
+      create: {
+        ...data,
+        categoryId: categoryIds[category],
+        imageUrl: placeholderImages[i % placeholderImages.length],
+      },
+    });
+    console.log(`  ✓ Food: ${food.name}`);
+  }
+
+  // 4. Seed ~10 days of mock activity history for the qa-user@lifewell.test
+  // test account (id captured via its real Neon Auth session — Profile rows
+  // are keyed by that id and can't be invented). Not the admin account.
+  const QA_USER_ID = "6327cc3c-4933-4a68-9f29-5cbe5e1c293d";
+  const qaProfileData = {
+    age: 28,
+    gender: "female" as const,
+    weightKg: 58,
+    heightCm: 162,
+    activityLevel: "LIGHTLY_ACTIVE" as const,
+    goal: "MUSCLE_GROWTH" as const,
+    onboardingCompletedAt: new Date(),
+  };
+
+  await prisma.profile.upsert({
+    where: { id: QA_USER_ID },
+    update: qaProfileData,
+    create: { id: QA_USER_ID, ...qaProfileData },
+  });
+  console.log("  ✓ Profile: qa-user@lifewell.test (onboarded)");
+
+  const nutrientByCode = new Map(
+    (await prisma.nutrient.findMany({ where: { code: { in: ["calories", "protein_g", "carbs_g", "fat_g"] } } })).map(
+      (n) => [n.code, n.id]
+    )
+  );
+
+  // Same formula onboarding uses — keeps seeded targets realistic for this profile/goal.
+  const qaTargets = calculateTargets({
+    sex: qaProfileData.gender,
+    age: qaProfileData.age,
+    weightKg: qaProfileData.weightKg,
+    heightCm: qaProfileData.heightCm,
+    activityLevel: qaProfileData.activityLevel,
+    goal: qaProfileData.goal,
+  });
+
+  const qaTargetAmounts: Record<string, number> = {
+    calories: qaTargets.calories,
+    protein_g: qaTargets.proteinG,
+    carbs_g: qaTargets.carbsG,
+    fat_g: qaTargets.fatG,
+  };
+
+  for (const code of ["calories", "protein_g", "carbs_g", "fat_g"]) {
+    const nutrientId = nutrientByCode.get(code)!;
+    const targetAmount = qaTargetAmounts[code];
+    await prisma.userTarget.upsert({
+      where: { userId_nutrientId: { userId: QA_USER_ID, nutrientId } },
+      update: { targetAmount },
+      create: { userId: QA_USER_ID, nutrientId, targetAmount },
+    });
+  }
+  console.log("  ✓ UserTargets: qa-user@lifewell.test");
+
+  type MockMeal = {
+    mealType: "BREAKFAST" | "LUNCH" | "DINNER" | "SNACK";
+    name: string;
+    grams: number;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
+  const mealTemplates: MockMeal[] = [
+    { mealType: "BREAKFAST", name: "Oatmeal with banana", grams: 250, calories: 320, protein: 9, carbs: 55, fat: 6 },
+    { mealType: "LUNCH", name: "Chicken breast with rice", grams: 350, calories: 620, protein: 42, carbs: 70, fat: 14 },
+    { mealType: "DINNER", name: "Grilled fish with vegetables", grams: 320, calories: 480, protein: 35, carbs: 30, fat: 18 },
+    { mealType: "SNACK", name: "Greek yogurt", grams: 170, calories: 140, protein: 12, carbs: 10, fat: 5 },
+  ];
+
+  // Clear any previous mock history for this account so re-running the seed
+  // doesn't pile up duplicate entries.
+  await prisma.mealEntry.deleteMany({ where: { userId: QA_USER_ID, source: "seed-mock" } });
+  await prisma.waterLog.deleteMany({ where: { userId: QA_USER_ID } });
+
+  const DAYS = 10;
+  for (let dayOffset = DAYS - 1; dayOffset >= 0; dayOffset--) {
+    const day = new Date();
+    day.setDate(day.getDate() - dayOffset);
+    day.setHours(0, 0, 0, 0);
+
+    // Skip one day (4 days ago) so the streak grid shows a realistic gap.
+    if (dayOffset === 4) continue;
+
+    // Slightly vary portions per day so the week isn't perfectly flat.
+    const scale = 0.85 + ((DAYS - dayOffset) % 4) * 0.08;
+
+    for (const [mealIndex, meal] of mealTemplates.entries()) {
+      const eatenAt = new Date(day);
+      eatenAt.setHours(7 + mealIndex * 4, 15, 0, 0);
+
+      const consumed = {
+        calories: Math.round(meal.calories * scale),
+        protein_g: Math.round(meal.protein * scale * 10) / 10,
+        carbs_g: Math.round(meal.carbs * scale * 10) / 10,
+        fat_g: Math.round(meal.fat * scale * 10) / 10,
+      };
+
+      await prisma.mealEntry.create({
+        data: {
+          userId: QA_USER_ID,
+          foodName: meal.name,
+          source: "seed-mock",
+          servingDescription: `${meal.grams}g`,
+          servingGrams: meal.grams,
+          quantity: 1,
+          mealType: meal.mealType,
+          eatenAt,
+          nutrients: {
+            create: (Object.keys(consumed) as (keyof typeof consumed)[])
+              .map((code) => ({ nutrientId: nutrientByCode.get(code), amountConsumed: consumed[code] }))
+              .filter((n) => Boolean(n.nutrientId)) as { nutrientId: string; amountConsumed: number }[],
           },
-        },
-        update: {
-          amountPerServing: nutrient.amount,
-          source: "USDA FoodData Central",
-          sourceUrl: "https://fdc.nal.usda.gov/",
-          sourceIdentifier: `USDA-FDC-${foodData.name.replace(/\s+/g, "-")}`,
-        },
-        create: {
-          foodId,
-          nutrientId,
-          amountPerServing: nutrient.amount,
-          source: "USDA FoodData Central",
-          sourceUrl: "https://fdc.nal.usda.gov/",
-          sourceIdentifier: `USDA-FDC-${foodData.name.replace(/\s+/g, "-")}`,
         },
       });
     }
 
-    console.log(`  ✓ Food: ${foodData.name}`);
+    // 4-8 glasses of water (200ml each).
+    const glasses = 4 + (dayOffset % 5);
+    for (let g = 0; g < glasses; g++) {
+      const loggedAt = new Date(day);
+      loggedAt.setHours(8 + g * 2, 0, 0, 0);
+      await prisma.waterLog.create({
+        data: { userId: QA_USER_ID, amountMl: 200, loggedAt },
+      });
+    }
+
+    console.log(`  ✓ Mock activity: ${day.toDateString()}`);
   }
 
   console.log("✅ Database seeded successfully!");
