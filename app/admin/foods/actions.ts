@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import {
   uploadFoodImage,
   deleteFoodImage,
-  validateFoodImage,
+  validateImage,
 } from "@/lib/imagekit";
 
 export interface FoodActionState {
@@ -137,7 +137,7 @@ export async function createFood(
       fieldErrors: { image: "An image is required." },
     };
   }
-  const imageError = validateFoodImage(image);
+  const imageError = validateImage(image);
   if (imageError) {
     return { error: "Please fix the errors below.", fieldErrors: { image: imageError } };
   }
@@ -187,7 +187,7 @@ export async function updateFood(
   let imageFileId = existing.imageFileId;
   const image = formData.get("image");
   if (image instanceof File && image.size > 0) {
-    const imageError = validateFoodImage(image);
+    const imageError = validateImage(image);
     if (imageError) {
       return { error: "Please fix the errors below.", fieldErrors: { image: imageError } };
     }

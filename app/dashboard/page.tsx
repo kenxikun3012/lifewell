@@ -157,7 +157,7 @@ export default async function DashboardPage() {
               </div>
             </div>
 
-            <div className="flex items-start gap-8">
+            <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:gap-8">
               <div className="flex flex-1 flex-col gap-4">
                 {macroRows.map((item) => (
                   <div key={item.label} className="flex flex-col gap-1.5">
@@ -175,7 +175,7 @@ export default async function DashboardPage() {
                 ))}
               </div>
 
-              <div className="flex min-w-[140px] flex-col items-center justify-center rounded-[20px] bg-white/60 p-4 text-center">
+              <div className="flex flex-col items-center justify-center rounded-[20px] bg-white/60 p-4 text-center sm:min-w-[140px]">
                 <span className="text-xs font-medium text-[#5F6368]">Target</span>
                 <span className="mt-1 text-2xl font-bold text-[#222222]">
                   {Math.round(targets.calories)}Kcal

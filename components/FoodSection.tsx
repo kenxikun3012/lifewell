@@ -1,6 +1,5 @@
 import Button from "./Button";
 import FoodCard from "./FoodCard";
-import FoodSlider from "./FoodSlider";
 
 export interface FoodSectionItem {
   id: string;
@@ -12,7 +11,6 @@ export interface FoodSectionItem {
 interface FoodSectionProps {
   title: string;
   foods: FoodSectionItem[];
-  showSlider?: boolean;
   showSeeMore?: boolean;
   seeMoreHref?: string;
 }
@@ -20,7 +18,6 @@ interface FoodSectionProps {
 export default function FoodSection({
   title,
   foods,
-  showSlider = false,
   showSeeMore = false,
   seeMoreHref,
 }: FoodSectionProps) {
@@ -50,13 +47,6 @@ export default function FoodSection({
               imageUrl={food.imageUrl}
             />
           ))}
-        </div>
-      )}
-
-      {/* Slider placeholder */}
-      {showSlider && (
-        <div className="mt-8">
-          <FoodSlider />
         </div>
       )}
     </section>

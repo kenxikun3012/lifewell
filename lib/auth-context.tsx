@@ -7,6 +7,7 @@ import { authClient } from "@/lib/auth/client";
 interface User {
   name: string;
   email: string;
+  image: string | null;
 }
 
 interface AuthContextValue {
@@ -16,6 +17,8 @@ interface AuthContextValue {
   login: (user: User) => void;
   signup: (user: User) => void;
   logout: () => void;
+  /** Re-fetches the client-side session — call after a server action changes it (e.g. name/avatar), so the Navbar picks it up without a full reload. */
+  refreshSession: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -42,6 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     ? {
         name: session.user.name || session.user.email.split("@")[0] || "User",
         email: session.user.email,
+        image: session.user.image ?? null,
       }
     : null;
 
@@ -60,6 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login: () => {},
         signup: () => {},
         logout,
+        refreshSession: refetch,
       }}
     >
       {children}

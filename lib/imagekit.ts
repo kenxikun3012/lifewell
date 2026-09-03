@@ -12,7 +12,8 @@ function getClient(): ImageKit {
   return imagekit;
 }
 
-const FOLDER = "/lifewell/foods";
+const FOOD_FOLDER = "/lifewell/foods";
+const AVATAR_FOLDER = "/lifewell/avatars";
 
 export const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -23,7 +24,8 @@ export const ALLOWED_IMAGE_TYPES = [
 
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB
 
-export function validateFoodImage(file: File): string | null {
+/** Shared JPG/PNG/WebP + size validation for any uploaded image (food photos, avatars). */
+export function validateImage(file: File): string | null {
   if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
     return "Image must be JPG, JPEG, PNG, or WebP.";
   }
@@ -46,7 +48,7 @@ export async function uploadFoodImage(file: File): Promise<UploadedFoodImage> {
   const result = await getClient().files.upload({
     file,
     fileName,
-    folder: FOLDER,
+    folder: FOOD_FOLDER,
     useUniqueFileName: false,
   });
 
@@ -70,4 +72,30 @@ export async function deleteFoodImage(fileId: string | null): Promise<void> {
   } catch (error) {
     console.error("Failed to delete ImageKit image", fileId, error);
   }
+}
+
+/**
+ * Uploads a user's profile photo to ImageKit and returns its URL. Unlike
+ * food images, avatars use a deterministic per-user filename (not a random
+ * UUID) with useUniqueFileName disabled, so re-uploading overwrites the
+ * previous file in place instead of accumulating orphans — no separate
+ * fileId needs to be tracked (the account's `image` field just stores the
+ * URL directly, in Neon Auth's own user record).
+ */
+export async function uploadAvatarImage(file: File, userId: string): Promise<string> {
+  const ext = file.type.split("/")[1] ?? "jpg";
+  const fileName = `avatar-${userId}.${ext}`;
+
+  const result = await getClient().files.upload({
+    file,
+    fileName,
+    folder: AVATAR_FOLDER,
+    useUniqueFileName: false,
+  });
+
+  if (!result.url) {
+    throw new Error("ImageKit upload did not return a url.");
+  }
+
+  return result.url;
 }

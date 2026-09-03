@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import ProfileForm from "@/components/account/ProfileForm";
 import TargetsForm from "@/components/account/TargetsForm";
+import AvatarUpload from "@/components/account/AvatarUpload";
 import { requireOnboardedUser } from "@/lib/onboarding";
 import { getSession } from "@/lib/session";
 import type { Goal, ActivityLevel } from "@/generated/prisma/client";
@@ -33,7 +34,7 @@ export default async function AccountPage() {
         <div className="rounded-2xl border border-gray-200 p-10">
           <h1 className="text-3xl font-bold mb-8">Account Information</h1>
 
-          <div className="w-28 h-28 rounded-xl bg-gray-200 mb-8"></div>
+          <AvatarUpload currentUrl={session?.user.image ?? null} name={session?.user.name ?? ""} />
 
           <ProfileForm
             name={session?.user.name ?? ""}

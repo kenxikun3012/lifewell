@@ -62,8 +62,35 @@ model Profile {
   userTargets       UserTarget[]
   waterLogs         WaterLog[]
   notificationReads NotificationRead[]
+  petState          PetState?
 
   @@map("profiles")
+}
+
+// ============ STREAK PET ============
+
+/// The home page's virtual pet, whose body reflects the user's real logged
+/// intake. Traits step by 1 (up or down, clamped to range) once per
+/// completed calendar week — see lib/pet.ts.
+model PetState {
+  id                      String   @id
+  /// 1 (slim) – 5 (heavy). Seeded from onboarding BMI on first creation.
+  bodySize                Int      @default(3) @map("body_size")
+  /// 1 (soft) – 5 (muscular), driven by weekly protein intake.
+  muscleLevel             Int      @default(2) @map("muscle_level")
+  /// 1 (lean) – 5 (puffy), driven by weekly fat intake.
+  puffinessLevel          Int      @default(2) @map("puffiness_level")
+  /// 1 (dim) – 3 (glowing), driven by weekly water intake.
+  glowLevel               Int      @default(2) @map("glow_level")
+  /// YYYY-MM-DD Monday of the last completed week already applied to the
+  /// levels above — how getOrUpdatePetState() knows what's left to catch up.
+  lastEvaluatedWeekStart  String   @map("last_evaluated_week_start")
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  profile Profile @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  @@map("pet_states")
 }
 
 // ============ NOTIFICATIONS ============

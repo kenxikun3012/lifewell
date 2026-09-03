@@ -133,6 +133,17 @@ exports.Prisma.ProfileScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PetStateScalarFieldEnum = {
+  id: 'id',
+  bodySize: 'bodySize',
+  muscleLevel: 'muscleLevel',
+  puffinessLevel: 'puffinessLevel',
+  glowLevel: 'glowLevel',
+  lastEvaluatedWeekStart: 'lastEvaluatedWeekStart',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -267,6 +278,7 @@ exports.MealType = exports.$Enums.MealType = {
 
 exports.Prisma.ModelName = {
   Profile: 'Profile',
+  PetState: 'PetState',
   Notification: 'Notification',
   NotificationRead: 'NotificationRead',
   Category: 'Category',

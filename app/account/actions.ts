@@ -4,8 +4,14 @@ import { revalidatePath } from "next/cache";
 import { requireOnboardedUser } from "@/lib/onboarding";
 import { auth } from "@/lib/auth/server";
 import { prisma } from "@/lib/prisma";
+import { uploadAvatarImage, validateImage } from "@/lib/imagekit";
 
 export interface ProfileActionState {
+  error?: string;
+  success?: string;
+}
+
+export interface AvatarActionState {
   error?: string;
   success?: string;
 }
@@ -48,4 +54,46 @@ export async function updateProfile(
 
   revalidatePath("/account");
   return { success: "Profile updated." };
+}
+
+export async function updateAvatar(
+  _prevState: AvatarActionState,
+  formData: FormData
+): Promise<AvatarActionState> {
+  const dbUser = await requireOnboardedUser();
+
+  const image = formData.get("image");
+  if (!(image instanceof File) || image.size === 0) {
+    return { error: "Please choose an image." };
+  }
+  const imageError = validateImage(image);
+  if (imageError) return { error: imageError };
+
+  let url: string;
+  try {
+    url = await uploadAvatarImage(image, dbUser.id);
+  } catch (error) {
+    console.error("Avatar upload failed", error);
+    return { error: "Upload failed. Please try again." };
+  }
+
+  const { error } = await auth.updateUser({ image: url });
+  if (error) {
+    return { error: error.message || "Failed to save your photo." };
+  }
+
+  revalidatePath("/account");
+  return { success: "Profile photo updated." };
+}
+
+export async function removeAvatar(): Promise<{ error?: string }> {
+  await requireOnboardedUser();
+
+  const { error } = await auth.updateUser({ image: null });
+  if (error) {
+    return { error: error.message || "Failed to remove your photo." };
+  }
+
+  revalidatePath("/account");
+  return {};
 }

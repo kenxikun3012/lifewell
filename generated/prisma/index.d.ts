@@ -22,6 +22,13 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Profile = $Result.DefaultSelection<Prisma.$ProfilePayload>
 /**
+ * Model PetState
+ * The home page's virtual pet, whose body reflects the user's real logged
+ * intake. Traits step by 1 (up or down, clamped to range) once per
+ * completed calendar week — see lib/pet.ts.
+ */
+export type PetState = $Result.DefaultSelection<Prisma.$PetStatePayload>
+/**
  * Model Notification
  * Admin-broadcast in-app notification (Dashboard > Notifications).
  */
@@ -261,6 +268,16 @@ export class PrismaClient<
     * ```
     */
   get profile(): Prisma.ProfileDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.petState`: Exposes CRUD operations for the **PetState** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PetStates
+    * const petStates = await prisma.petState.findMany()
+    * ```
+    */
+  get petState(): Prisma.PetStateDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
@@ -799,6 +816,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Profile: 'Profile',
+    PetState: 'PetState',
     Notification: 'Notification',
     NotificationRead: 'NotificationRead',
     Category: 'Category',
@@ -823,7 +841,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "profile" | "notification" | "notificationRead" | "category" | "food" | "nutrient" | "userTarget" | "mealEntry" | "mealEntryNutrient" | "waterLog"
+      modelProps: "profile" | "petState" | "notification" | "notificationRead" | "category" | "food" | "nutrient" | "userTarget" | "mealEntry" | "mealEntryNutrient" | "waterLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -898,6 +916,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ProfileCountArgs<ExtArgs>
             result: $Utils.Optional<ProfileCountAggregateOutputType> | number
+          }
+        }
+      }
+      PetState: {
+        payload: Prisma.$PetStatePayload<ExtArgs>
+        fields: Prisma.PetStateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PetStateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PetStateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload>
+          }
+          findFirst: {
+            args: Prisma.PetStateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PetStateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload>
+          }
+          findMany: {
+            args: Prisma.PetStateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload>[]
+          }
+          create: {
+            args: Prisma.PetStateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload>
+          }
+          createMany: {
+            args: Prisma.PetStateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PetStateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload>[]
+          }
+          delete: {
+            args: Prisma.PetStateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload>
+          }
+          update: {
+            args: Prisma.PetStateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload>
+          }
+          deleteMany: {
+            args: Prisma.PetStateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PetStateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PetStateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload>[]
+          }
+          upsert: {
+            args: Prisma.PetStateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PetStatePayload>
+          }
+          aggregate: {
+            args: Prisma.PetStateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePetState>
+          }
+          groupBy: {
+            args: Prisma.PetStateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PetStateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PetStateCountArgs<ExtArgs>
+            result: $Utils.Optional<PetStateCountAggregateOutputType> | number
           }
         }
       }
@@ -1691,6 +1783,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     profile?: ProfileOmit
+    petState?: PetStateOmit
     notification?: NotificationOmit
     notificationRead?: NotificationReadOmit
     category?: CategoryOmit
@@ -2251,6 +2344,7 @@ export namespace Prisma {
     userTargets?: boolean | Profile$userTargetsArgs<ExtArgs>
     waterLogs?: boolean | Profile$waterLogsArgs<ExtArgs>
     notificationReads?: boolean | Profile$notificationReadsArgs<ExtArgs>
+    petState?: boolean | Profile$petStateArgs<ExtArgs>
     _count?: boolean | ProfileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profile"]>
 
@@ -2299,6 +2393,7 @@ export namespace Prisma {
     userTargets?: boolean | Profile$userTargetsArgs<ExtArgs>
     waterLogs?: boolean | Profile$waterLogsArgs<ExtArgs>
     notificationReads?: boolean | Profile$notificationReadsArgs<ExtArgs>
+    petState?: boolean | Profile$petStateArgs<ExtArgs>
     _count?: boolean | ProfileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2311,6 +2406,7 @@ export namespace Prisma {
       userTargets: Prisma.$UserTargetPayload<ExtArgs>[]
       waterLogs: Prisma.$WaterLogPayload<ExtArgs>[]
       notificationReads: Prisma.$NotificationReadPayload<ExtArgs>[]
+      petState: Prisma.$PetStatePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2725,6 +2821,7 @@ export namespace Prisma {
     userTargets<T extends Profile$userTargetsArgs<ExtArgs> = {}>(args?: Subset<T, Profile$userTargetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserTargetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     waterLogs<T extends Profile$waterLogsArgs<ExtArgs> = {}>(args?: Subset<T, Profile$waterLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WaterLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notificationReads<T extends Profile$notificationReadsArgs<ExtArgs> = {}>(args?: Subset<T, Profile$notificationReadsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationReadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    petState<T extends Profile$petStateArgs<ExtArgs> = {}>(args?: Subset<T, Profile$petStateArgs<ExtArgs>>): Prisma__PetStateClient<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3253,6 +3350,25 @@ export namespace Prisma {
   }
 
   /**
+   * Profile.petState
+   */
+  export type Profile$petStateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
+    where?: PetStateWhereInput
+  }
+
+  /**
    * Profile without action
    */
   export type ProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3268,6 +3384,1170 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ProfileInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PetState
+   */
+
+  export type AggregatePetState = {
+    _count: PetStateCountAggregateOutputType | null
+    _avg: PetStateAvgAggregateOutputType | null
+    _sum: PetStateSumAggregateOutputType | null
+    _min: PetStateMinAggregateOutputType | null
+    _max: PetStateMaxAggregateOutputType | null
+  }
+
+  export type PetStateAvgAggregateOutputType = {
+    bodySize: number | null
+    muscleLevel: number | null
+    puffinessLevel: number | null
+    glowLevel: number | null
+  }
+
+  export type PetStateSumAggregateOutputType = {
+    bodySize: number | null
+    muscleLevel: number | null
+    puffinessLevel: number | null
+    glowLevel: number | null
+  }
+
+  export type PetStateMinAggregateOutputType = {
+    id: string | null
+    bodySize: number | null
+    muscleLevel: number | null
+    puffinessLevel: number | null
+    glowLevel: number | null
+    lastEvaluatedWeekStart: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PetStateMaxAggregateOutputType = {
+    id: string | null
+    bodySize: number | null
+    muscleLevel: number | null
+    puffinessLevel: number | null
+    glowLevel: number | null
+    lastEvaluatedWeekStart: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PetStateCountAggregateOutputType = {
+    id: number
+    bodySize: number
+    muscleLevel: number
+    puffinessLevel: number
+    glowLevel: number
+    lastEvaluatedWeekStart: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PetStateAvgAggregateInputType = {
+    bodySize?: true
+    muscleLevel?: true
+    puffinessLevel?: true
+    glowLevel?: true
+  }
+
+  export type PetStateSumAggregateInputType = {
+    bodySize?: true
+    muscleLevel?: true
+    puffinessLevel?: true
+    glowLevel?: true
+  }
+
+  export type PetStateMinAggregateInputType = {
+    id?: true
+    bodySize?: true
+    muscleLevel?: true
+    puffinessLevel?: true
+    glowLevel?: true
+    lastEvaluatedWeekStart?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PetStateMaxAggregateInputType = {
+    id?: true
+    bodySize?: true
+    muscleLevel?: true
+    puffinessLevel?: true
+    glowLevel?: true
+    lastEvaluatedWeekStart?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PetStateCountAggregateInputType = {
+    id?: true
+    bodySize?: true
+    muscleLevel?: true
+    puffinessLevel?: true
+    glowLevel?: true
+    lastEvaluatedWeekStart?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PetStateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PetState to aggregate.
+     */
+    where?: PetStateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PetStates to fetch.
+     */
+    orderBy?: PetStateOrderByWithRelationInput | PetStateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PetStateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PetStates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PetStates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PetStates
+    **/
+    _count?: true | PetStateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PetStateAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PetStateSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PetStateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PetStateMaxAggregateInputType
+  }
+
+  export type GetPetStateAggregateType<T extends PetStateAggregateArgs> = {
+        [P in keyof T & keyof AggregatePetState]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePetState[P]>
+      : GetScalarType<T[P], AggregatePetState[P]>
+  }
+
+
+
+
+  export type PetStateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PetStateWhereInput
+    orderBy?: PetStateOrderByWithAggregationInput | PetStateOrderByWithAggregationInput[]
+    by: PetStateScalarFieldEnum[] | PetStateScalarFieldEnum
+    having?: PetStateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PetStateCountAggregateInputType | true
+    _avg?: PetStateAvgAggregateInputType
+    _sum?: PetStateSumAggregateInputType
+    _min?: PetStateMinAggregateInputType
+    _max?: PetStateMaxAggregateInputType
+  }
+
+  export type PetStateGroupByOutputType = {
+    id: string
+    bodySize: number
+    muscleLevel: number
+    puffinessLevel: number
+    glowLevel: number
+    lastEvaluatedWeekStart: string
+    createdAt: Date
+    updatedAt: Date
+    _count: PetStateCountAggregateOutputType | null
+    _avg: PetStateAvgAggregateOutputType | null
+    _sum: PetStateSumAggregateOutputType | null
+    _min: PetStateMinAggregateOutputType | null
+    _max: PetStateMaxAggregateOutputType | null
+  }
+
+  type GetPetStateGroupByPayload<T extends PetStateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PetStateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PetStateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PetStateGroupByOutputType[P]>
+            : GetScalarType<T[P], PetStateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PetStateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bodySize?: boolean
+    muscleLevel?: boolean
+    puffinessLevel?: boolean
+    glowLevel?: boolean
+    lastEvaluatedWeekStart?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    profile?: boolean | ProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["petState"]>
+
+  export type PetStateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bodySize?: boolean
+    muscleLevel?: boolean
+    puffinessLevel?: boolean
+    glowLevel?: boolean
+    lastEvaluatedWeekStart?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    profile?: boolean | ProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["petState"]>
+
+  export type PetStateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bodySize?: boolean
+    muscleLevel?: boolean
+    puffinessLevel?: boolean
+    glowLevel?: boolean
+    lastEvaluatedWeekStart?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    profile?: boolean | ProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["petState"]>
+
+  export type PetStateSelectScalar = {
+    id?: boolean
+    bodySize?: boolean
+    muscleLevel?: boolean
+    puffinessLevel?: boolean
+    glowLevel?: boolean
+    lastEvaluatedWeekStart?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PetStateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bodySize" | "muscleLevel" | "puffinessLevel" | "glowLevel" | "lastEvaluatedWeekStart" | "createdAt" | "updatedAt", ExtArgs["result"]["petState"]>
+  export type PetStateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profile?: boolean | ProfileDefaultArgs<ExtArgs>
+  }
+  export type PetStateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profile?: boolean | ProfileDefaultArgs<ExtArgs>
+  }
+  export type PetStateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profile?: boolean | ProfileDefaultArgs<ExtArgs>
+  }
+
+  export type $PetStatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PetState"
+    objects: {
+      profile: Prisma.$ProfilePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      /**
+       * 1 (slim) – 5 (heavy). Seeded from onboarding BMI on first creation.
+       */
+      bodySize: number
+      /**
+       * 1 (soft) – 5 (muscular), driven by weekly protein intake.
+       */
+      muscleLevel: number
+      /**
+       * 1 (lean) – 5 (puffy), driven by weekly fat intake.
+       */
+      puffinessLevel: number
+      /**
+       * 1 (dim) – 3 (glowing), driven by weekly water intake.
+       */
+      glowLevel: number
+      /**
+       * YYYY-MM-DD Monday of the last completed week already applied to the
+       * levels above — how getOrUpdatePetState() knows what's left to catch up.
+       */
+      lastEvaluatedWeekStart: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["petState"]>
+    composites: {}
+  }
+
+  type PetStateGetPayload<S extends boolean | null | undefined | PetStateDefaultArgs> = $Result.GetResult<Prisma.$PetStatePayload, S>
+
+  type PetStateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PetStateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PetStateCountAggregateInputType | true
+    }
+
+  export interface PetStateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PetState'], meta: { name: 'PetState' } }
+    /**
+     * Find zero or one PetState that matches the filter.
+     * @param {PetStateFindUniqueArgs} args - Arguments to find a PetState
+     * @example
+     * // Get one PetState
+     * const petState = await prisma.petState.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PetStateFindUniqueArgs>(args: SelectSubset<T, PetStateFindUniqueArgs<ExtArgs>>): Prisma__PetStateClient<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PetState that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PetStateFindUniqueOrThrowArgs} args - Arguments to find a PetState
+     * @example
+     * // Get one PetState
+     * const petState = await prisma.petState.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PetStateFindUniqueOrThrowArgs>(args: SelectSubset<T, PetStateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PetStateClient<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PetState that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PetStateFindFirstArgs} args - Arguments to find a PetState
+     * @example
+     * // Get one PetState
+     * const petState = await prisma.petState.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PetStateFindFirstArgs>(args?: SelectSubset<T, PetStateFindFirstArgs<ExtArgs>>): Prisma__PetStateClient<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PetState that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PetStateFindFirstOrThrowArgs} args - Arguments to find a PetState
+     * @example
+     * // Get one PetState
+     * const petState = await prisma.petState.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PetStateFindFirstOrThrowArgs>(args?: SelectSubset<T, PetStateFindFirstOrThrowArgs<ExtArgs>>): Prisma__PetStateClient<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PetStates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PetStateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PetStates
+     * const petStates = await prisma.petState.findMany()
+     * 
+     * // Get first 10 PetStates
+     * const petStates = await prisma.petState.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const petStateWithIdOnly = await prisma.petState.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PetStateFindManyArgs>(args?: SelectSubset<T, PetStateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PetState.
+     * @param {PetStateCreateArgs} args - Arguments to create a PetState.
+     * @example
+     * // Create one PetState
+     * const PetState = await prisma.petState.create({
+     *   data: {
+     *     // ... data to create a PetState
+     *   }
+     * })
+     * 
+     */
+    create<T extends PetStateCreateArgs>(args: SelectSubset<T, PetStateCreateArgs<ExtArgs>>): Prisma__PetStateClient<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PetStates.
+     * @param {PetStateCreateManyArgs} args - Arguments to create many PetStates.
+     * @example
+     * // Create many PetStates
+     * const petState = await prisma.petState.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PetStateCreateManyArgs>(args?: SelectSubset<T, PetStateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PetStates and returns the data saved in the database.
+     * @param {PetStateCreateManyAndReturnArgs} args - Arguments to create many PetStates.
+     * @example
+     * // Create many PetStates
+     * const petState = await prisma.petState.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PetStates and only return the `id`
+     * const petStateWithIdOnly = await prisma.petState.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PetStateCreateManyAndReturnArgs>(args?: SelectSubset<T, PetStateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PetState.
+     * @param {PetStateDeleteArgs} args - Arguments to delete one PetState.
+     * @example
+     * // Delete one PetState
+     * const PetState = await prisma.petState.delete({
+     *   where: {
+     *     // ... filter to delete one PetState
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PetStateDeleteArgs>(args: SelectSubset<T, PetStateDeleteArgs<ExtArgs>>): Prisma__PetStateClient<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PetState.
+     * @param {PetStateUpdateArgs} args - Arguments to update one PetState.
+     * @example
+     * // Update one PetState
+     * const petState = await prisma.petState.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PetStateUpdateArgs>(args: SelectSubset<T, PetStateUpdateArgs<ExtArgs>>): Prisma__PetStateClient<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PetStates.
+     * @param {PetStateDeleteManyArgs} args - Arguments to filter PetStates to delete.
+     * @example
+     * // Delete a few PetStates
+     * const { count } = await prisma.petState.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PetStateDeleteManyArgs>(args?: SelectSubset<T, PetStateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PetStates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PetStateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PetStates
+     * const petState = await prisma.petState.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PetStateUpdateManyArgs>(args: SelectSubset<T, PetStateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PetStates and returns the data updated in the database.
+     * @param {PetStateUpdateManyAndReturnArgs} args - Arguments to update many PetStates.
+     * @example
+     * // Update many PetStates
+     * const petState = await prisma.petState.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PetStates and only return the `id`
+     * const petStateWithIdOnly = await prisma.petState.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PetStateUpdateManyAndReturnArgs>(args: SelectSubset<T, PetStateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PetState.
+     * @param {PetStateUpsertArgs} args - Arguments to update or create a PetState.
+     * @example
+     * // Update or create a PetState
+     * const petState = await prisma.petState.upsert({
+     *   create: {
+     *     // ... data to create a PetState
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PetState we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PetStateUpsertArgs>(args: SelectSubset<T, PetStateUpsertArgs<ExtArgs>>): Prisma__PetStateClient<$Result.GetResult<Prisma.$PetStatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PetStates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PetStateCountArgs} args - Arguments to filter PetStates to count.
+     * @example
+     * // Count the number of PetStates
+     * const count = await prisma.petState.count({
+     *   where: {
+     *     // ... the filter for the PetStates we want to count
+     *   }
+     * })
+    **/
+    count<T extends PetStateCountArgs>(
+      args?: Subset<T, PetStateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PetStateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PetState.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PetStateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PetStateAggregateArgs>(args: Subset<T, PetStateAggregateArgs>): Prisma.PrismaPromise<GetPetStateAggregateType<T>>
+
+    /**
+     * Group by PetState.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PetStateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PetStateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PetStateGroupByArgs['orderBy'] }
+        : { orderBy?: PetStateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PetStateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPetStateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PetState model
+   */
+  readonly fields: PetStateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PetState.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PetStateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    profile<T extends ProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProfileDefaultArgs<ExtArgs>>): Prisma__ProfileClient<$Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PetState model
+   */
+  interface PetStateFieldRefs {
+    readonly id: FieldRef<"PetState", 'String'>
+    readonly bodySize: FieldRef<"PetState", 'Int'>
+    readonly muscleLevel: FieldRef<"PetState", 'Int'>
+    readonly puffinessLevel: FieldRef<"PetState", 'Int'>
+    readonly glowLevel: FieldRef<"PetState", 'Int'>
+    readonly lastEvaluatedWeekStart: FieldRef<"PetState", 'String'>
+    readonly createdAt: FieldRef<"PetState", 'DateTime'>
+    readonly updatedAt: FieldRef<"PetState", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PetState findUnique
+   */
+  export type PetStateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
+    /**
+     * Filter, which PetState to fetch.
+     */
+    where: PetStateWhereUniqueInput
+  }
+
+  /**
+   * PetState findUniqueOrThrow
+   */
+  export type PetStateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
+    /**
+     * Filter, which PetState to fetch.
+     */
+    where: PetStateWhereUniqueInput
+  }
+
+  /**
+   * PetState findFirst
+   */
+  export type PetStateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
+    /**
+     * Filter, which PetState to fetch.
+     */
+    where?: PetStateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PetStates to fetch.
+     */
+    orderBy?: PetStateOrderByWithRelationInput | PetStateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PetStates.
+     */
+    cursor?: PetStateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PetStates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PetStates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PetStates.
+     */
+    distinct?: PetStateScalarFieldEnum | PetStateScalarFieldEnum[]
+  }
+
+  /**
+   * PetState findFirstOrThrow
+   */
+  export type PetStateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
+    /**
+     * Filter, which PetState to fetch.
+     */
+    where?: PetStateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PetStates to fetch.
+     */
+    orderBy?: PetStateOrderByWithRelationInput | PetStateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PetStates.
+     */
+    cursor?: PetStateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PetStates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PetStates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PetStates.
+     */
+    distinct?: PetStateScalarFieldEnum | PetStateScalarFieldEnum[]
+  }
+
+  /**
+   * PetState findMany
+   */
+  export type PetStateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
+    /**
+     * Filter, which PetStates to fetch.
+     */
+    where?: PetStateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PetStates to fetch.
+     */
+    orderBy?: PetStateOrderByWithRelationInput | PetStateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PetStates.
+     */
+    cursor?: PetStateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PetStates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PetStates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PetStates.
+     */
+    distinct?: PetStateScalarFieldEnum | PetStateScalarFieldEnum[]
+  }
+
+  /**
+   * PetState create
+   */
+  export type PetStateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PetState.
+     */
+    data: XOR<PetStateCreateInput, PetStateUncheckedCreateInput>
+  }
+
+  /**
+   * PetState createMany
+   */
+  export type PetStateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PetStates.
+     */
+    data: PetStateCreateManyInput | PetStateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PetState createManyAndReturn
+   */
+  export type PetStateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * The data used to create many PetStates.
+     */
+    data: PetStateCreateManyInput | PetStateCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PetState update
+   */
+  export type PetStateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PetState.
+     */
+    data: XOR<PetStateUpdateInput, PetStateUncheckedUpdateInput>
+    /**
+     * Choose, which PetState to update.
+     */
+    where: PetStateWhereUniqueInput
+  }
+
+  /**
+   * PetState updateMany
+   */
+  export type PetStateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PetStates.
+     */
+    data: XOR<PetStateUpdateManyMutationInput, PetStateUncheckedUpdateManyInput>
+    /**
+     * Filter which PetStates to update
+     */
+    where?: PetStateWhereInput
+    /**
+     * Limit how many PetStates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PetState updateManyAndReturn
+   */
+  export type PetStateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * The data used to update PetStates.
+     */
+    data: XOR<PetStateUpdateManyMutationInput, PetStateUncheckedUpdateManyInput>
+    /**
+     * Filter which PetStates to update
+     */
+    where?: PetStateWhereInput
+    /**
+     * Limit how many PetStates to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PetState upsert
+   */
+  export type PetStateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PetState to update in case it exists.
+     */
+    where: PetStateWhereUniqueInput
+    /**
+     * In case the PetState found by the `where` argument doesn't exist, create a new PetState with this data.
+     */
+    create: XOR<PetStateCreateInput, PetStateUncheckedCreateInput>
+    /**
+     * In case the PetState was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PetStateUpdateInput, PetStateUncheckedUpdateInput>
+  }
+
+  /**
+   * PetState delete
+   */
+  export type PetStateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
+    /**
+     * Filter which PetState to delete.
+     */
+    where: PetStateWhereUniqueInput
+  }
+
+  /**
+   * PetState deleteMany
+   */
+  export type PetStateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PetStates to delete
+     */
+    where?: PetStateWhereInput
+    /**
+     * Limit how many PetStates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PetState without action
+   */
+  export type PetStateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PetState
+     */
+    select?: PetStateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PetState
+     */
+    omit?: PetStateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PetStateInclude<ExtArgs> | null
   }
 
 
@@ -13495,6 +14775,20 @@ export namespace Prisma {
   export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
 
 
+  export const PetStateScalarFieldEnum: {
+    id: 'id',
+    bodySize: 'bodySize',
+    muscleLevel: 'muscleLevel',
+    puffinessLevel: 'puffinessLevel',
+    glowLevel: 'glowLevel',
+    lastEvaluatedWeekStart: 'lastEvaluatedWeekStart',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PetStateScalarFieldEnum = (typeof PetStateScalarFieldEnum)[keyof typeof PetStateScalarFieldEnum]
+
+
   export const NotificationScalarFieldEnum: {
     id: 'id',
     title: 'title',
@@ -13794,6 +15088,7 @@ export namespace Prisma {
     userTargets?: UserTargetListRelationFilter
     waterLogs?: WaterLogListRelationFilter
     notificationReads?: NotificationReadListRelationFilter
+    petState?: XOR<PetStateNullableScalarRelationFilter, PetStateWhereInput> | null
   }
 
   export type ProfileOrderByWithRelationInput = {
@@ -13811,6 +15106,7 @@ export namespace Prisma {
     userTargets?: UserTargetOrderByRelationAggregateInput
     waterLogs?: WaterLogOrderByRelationAggregateInput
     notificationReads?: NotificationReadOrderByRelationAggregateInput
+    petState?: PetStateOrderByWithRelationInput
   }
 
   export type ProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -13831,6 +15127,7 @@ export namespace Prisma {
     userTargets?: UserTargetListRelationFilter
     waterLogs?: WaterLogListRelationFilter
     notificationReads?: NotificationReadListRelationFilter
+    petState?: XOR<PetStateNullableScalarRelationFilter, PetStateWhereInput> | null
   }, "id">
 
   export type ProfileOrderByWithAggregationInput = {
@@ -13865,6 +15162,78 @@ export namespace Prisma {
     onboardingCompletedAt?: DateTimeNullableWithAggregatesFilter<"Profile"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Profile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Profile"> | Date | string
+  }
+
+  export type PetStateWhereInput = {
+    AND?: PetStateWhereInput | PetStateWhereInput[]
+    OR?: PetStateWhereInput[]
+    NOT?: PetStateWhereInput | PetStateWhereInput[]
+    id?: StringFilter<"PetState"> | string
+    bodySize?: IntFilter<"PetState"> | number
+    muscleLevel?: IntFilter<"PetState"> | number
+    puffinessLevel?: IntFilter<"PetState"> | number
+    glowLevel?: IntFilter<"PetState"> | number
+    lastEvaluatedWeekStart?: StringFilter<"PetState"> | string
+    createdAt?: DateTimeFilter<"PetState"> | Date | string
+    updatedAt?: DateTimeFilter<"PetState"> | Date | string
+    profile?: XOR<ProfileScalarRelationFilter, ProfileWhereInput>
+  }
+
+  export type PetStateOrderByWithRelationInput = {
+    id?: SortOrder
+    bodySize?: SortOrder
+    muscleLevel?: SortOrder
+    puffinessLevel?: SortOrder
+    glowLevel?: SortOrder
+    lastEvaluatedWeekStart?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    profile?: ProfileOrderByWithRelationInput
+  }
+
+  export type PetStateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PetStateWhereInput | PetStateWhereInput[]
+    OR?: PetStateWhereInput[]
+    NOT?: PetStateWhereInput | PetStateWhereInput[]
+    bodySize?: IntFilter<"PetState"> | number
+    muscleLevel?: IntFilter<"PetState"> | number
+    puffinessLevel?: IntFilter<"PetState"> | number
+    glowLevel?: IntFilter<"PetState"> | number
+    lastEvaluatedWeekStart?: StringFilter<"PetState"> | string
+    createdAt?: DateTimeFilter<"PetState"> | Date | string
+    updatedAt?: DateTimeFilter<"PetState"> | Date | string
+    profile?: XOR<ProfileScalarRelationFilter, ProfileWhereInput>
+  }, "id">
+
+  export type PetStateOrderByWithAggregationInput = {
+    id?: SortOrder
+    bodySize?: SortOrder
+    muscleLevel?: SortOrder
+    puffinessLevel?: SortOrder
+    glowLevel?: SortOrder
+    lastEvaluatedWeekStart?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PetStateCountOrderByAggregateInput
+    _avg?: PetStateAvgOrderByAggregateInput
+    _max?: PetStateMaxOrderByAggregateInput
+    _min?: PetStateMinOrderByAggregateInput
+    _sum?: PetStateSumOrderByAggregateInput
+  }
+
+  export type PetStateScalarWhereWithAggregatesInput = {
+    AND?: PetStateScalarWhereWithAggregatesInput | PetStateScalarWhereWithAggregatesInput[]
+    OR?: PetStateScalarWhereWithAggregatesInput[]
+    NOT?: PetStateScalarWhereWithAggregatesInput | PetStateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PetState"> | string
+    bodySize?: IntWithAggregatesFilter<"PetState"> | number
+    muscleLevel?: IntWithAggregatesFilter<"PetState"> | number
+    puffinessLevel?: IntWithAggregatesFilter<"PetState"> | number
+    glowLevel?: IntWithAggregatesFilter<"PetState"> | number
+    lastEvaluatedWeekStart?: StringWithAggregatesFilter<"PetState"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PetState"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PetState"> | Date | string
   }
 
   export type NotificationWhereInput = {
@@ -14498,6 +15867,7 @@ export namespace Prisma {
     userTargets?: UserTargetCreateNestedManyWithoutProfileInput
     waterLogs?: WaterLogCreateNestedManyWithoutProfileInput
     notificationReads?: NotificationReadCreateNestedManyWithoutProfileInput
+    petState?: PetStateCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateInput = {
@@ -14515,6 +15885,7 @@ export namespace Prisma {
     userTargets?: UserTargetUncheckedCreateNestedManyWithoutProfileInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutProfileInput
     notificationReads?: NotificationReadUncheckedCreateNestedManyWithoutProfileInput
+    petState?: PetStateUncheckedCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileUpdateInput = {
@@ -14532,6 +15903,7 @@ export namespace Prisma {
     userTargets?: UserTargetUpdateManyWithoutProfileNestedInput
     waterLogs?: WaterLogUpdateManyWithoutProfileNestedInput
     notificationReads?: NotificationReadUpdateManyWithoutProfileNestedInput
+    petState?: PetStateUpdateOneWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateInput = {
@@ -14549,6 +15921,7 @@ export namespace Prisma {
     userTargets?: UserTargetUncheckedUpdateManyWithoutProfileNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutProfileNestedInput
     notificationReads?: NotificationReadUncheckedUpdateManyWithoutProfileNestedInput
+    petState?: PetStateUncheckedUpdateOneWithoutProfileNestedInput
   }
 
   export type ProfileCreateManyInput = {
@@ -14586,6 +15959,82 @@ export namespace Prisma {
     goal?: NullableEnumGoalFieldUpdateOperationsInput | $Enums.Goal | null
     activityLevel?: NullableEnumActivityLevelFieldUpdateOperationsInput | $Enums.ActivityLevel | null
     onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PetStateCreateInput = {
+    bodySize?: number
+    muscleLevel?: number
+    puffinessLevel?: number
+    glowLevel?: number
+    lastEvaluatedWeekStart: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    profile: ProfileCreateNestedOneWithoutPetStateInput
+  }
+
+  export type PetStateUncheckedCreateInput = {
+    id: string
+    bodySize?: number
+    muscleLevel?: number
+    puffinessLevel?: number
+    glowLevel?: number
+    lastEvaluatedWeekStart: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PetStateUpdateInput = {
+    bodySize?: IntFieldUpdateOperationsInput | number
+    muscleLevel?: IntFieldUpdateOperationsInput | number
+    puffinessLevel?: IntFieldUpdateOperationsInput | number
+    glowLevel?: IntFieldUpdateOperationsInput | number
+    lastEvaluatedWeekStart?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profile?: ProfileUpdateOneRequiredWithoutPetStateNestedInput
+  }
+
+  export type PetStateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bodySize?: IntFieldUpdateOperationsInput | number
+    muscleLevel?: IntFieldUpdateOperationsInput | number
+    puffinessLevel?: IntFieldUpdateOperationsInput | number
+    glowLevel?: IntFieldUpdateOperationsInput | number
+    lastEvaluatedWeekStart?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PetStateCreateManyInput = {
+    id: string
+    bodySize?: number
+    muscleLevel?: number
+    puffinessLevel?: number
+    glowLevel?: number
+    lastEvaluatedWeekStart: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PetStateUpdateManyMutationInput = {
+    bodySize?: IntFieldUpdateOperationsInput | number
+    muscleLevel?: IntFieldUpdateOperationsInput | number
+    puffinessLevel?: IntFieldUpdateOperationsInput | number
+    glowLevel?: IntFieldUpdateOperationsInput | number
+    lastEvaluatedWeekStart?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PetStateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bodySize?: IntFieldUpdateOperationsInput | number
+    muscleLevel?: IntFieldUpdateOperationsInput | number
+    puffinessLevel?: IntFieldUpdateOperationsInput | number
+    glowLevel?: IntFieldUpdateOperationsInput | number
+    lastEvaluatedWeekStart?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15339,6 +16788,11 @@ export namespace Prisma {
     none?: NotificationReadWhereInput
   }
 
+  export type PetStateNullableScalarRelationFilter = {
+    is?: PetStateWhereInput | null
+    isNot?: PetStateWhereInput | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -15527,6 +16981,85 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type ProfileScalarRelationFilter = {
+    is?: ProfileWhereInput
+    isNot?: ProfileWhereInput
+  }
+
+  export type PetStateCountOrderByAggregateInput = {
+    id?: SortOrder
+    bodySize?: SortOrder
+    muscleLevel?: SortOrder
+    puffinessLevel?: SortOrder
+    glowLevel?: SortOrder
+    lastEvaluatedWeekStart?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PetStateAvgOrderByAggregateInput = {
+    bodySize?: SortOrder
+    muscleLevel?: SortOrder
+    puffinessLevel?: SortOrder
+    glowLevel?: SortOrder
+  }
+
+  export type PetStateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    bodySize?: SortOrder
+    muscleLevel?: SortOrder
+    puffinessLevel?: SortOrder
+    glowLevel?: SortOrder
+    lastEvaluatedWeekStart?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PetStateMinOrderByAggregateInput = {
+    id?: SortOrder
+    bodySize?: SortOrder
+    muscleLevel?: SortOrder
+    puffinessLevel?: SortOrder
+    glowLevel?: SortOrder
+    lastEvaluatedWeekStart?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PetStateSumOrderByAggregateInput = {
+    bodySize?: SortOrder
+    muscleLevel?: SortOrder
+    puffinessLevel?: SortOrder
+    glowLevel?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type NotificationCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
@@ -15554,11 +17087,6 @@ export namespace Prisma {
   export type NotificationScalarRelationFilter = {
     is?: NotificationWhereInput
     isNot?: NotificationWhereInput
-  }
-
-  export type ProfileScalarRelationFilter = {
-    is?: ProfileWhereInput
-    isNot?: ProfileWhereInput
   }
 
   export type NotificationReadNotificationIdUserIdCompoundUniqueInput = {
@@ -15721,17 +17249,6 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type MealEntryNutrientListRelationFilter = {
     every?: MealEntryNutrientWhereInput
     some?: MealEntryNutrientWhereInput
@@ -15807,22 +17324,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type NutrientScalarRelationFilter = {
@@ -16046,6 +17547,12 @@ export namespace Prisma {
     connect?: NotificationReadWhereUniqueInput | NotificationReadWhereUniqueInput[]
   }
 
+  export type PetStateCreateNestedOneWithoutProfileInput = {
+    create?: XOR<PetStateCreateWithoutProfileInput, PetStateUncheckedCreateWithoutProfileInput>
+    connectOrCreate?: PetStateCreateOrConnectWithoutProfileInput
+    connect?: PetStateWhereUniqueInput
+  }
+
   export type MealEntryUncheckedCreateNestedManyWithoutProfileInput = {
     create?: XOR<MealEntryCreateWithoutProfileInput, MealEntryUncheckedCreateWithoutProfileInput> | MealEntryCreateWithoutProfileInput[] | MealEntryUncheckedCreateWithoutProfileInput[]
     connectOrCreate?: MealEntryCreateOrConnectWithoutProfileInput | MealEntryCreateOrConnectWithoutProfileInput[]
@@ -16072,6 +17579,12 @@ export namespace Prisma {
     connectOrCreate?: NotificationReadCreateOrConnectWithoutProfileInput | NotificationReadCreateOrConnectWithoutProfileInput[]
     createMany?: NotificationReadCreateManyProfileInputEnvelope
     connect?: NotificationReadWhereUniqueInput | NotificationReadWhereUniqueInput[]
+  }
+
+  export type PetStateUncheckedCreateNestedOneWithoutProfileInput = {
+    create?: XOR<PetStateCreateWithoutProfileInput, PetStateUncheckedCreateWithoutProfileInput>
+    connectOrCreate?: PetStateCreateOrConnectWithoutProfileInput
+    connect?: PetStateWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -16170,6 +17683,16 @@ export namespace Prisma {
     deleteMany?: NotificationReadScalarWhereInput | NotificationReadScalarWhereInput[]
   }
 
+  export type PetStateUpdateOneWithoutProfileNestedInput = {
+    create?: XOR<PetStateCreateWithoutProfileInput, PetStateUncheckedCreateWithoutProfileInput>
+    connectOrCreate?: PetStateCreateOrConnectWithoutProfileInput
+    upsert?: PetStateUpsertWithoutProfileInput
+    disconnect?: PetStateWhereInput | boolean
+    delete?: PetStateWhereInput | boolean
+    connect?: PetStateWhereUniqueInput
+    update?: XOR<XOR<PetStateUpdateToOneWithWhereWithoutProfileInput, PetStateUpdateWithoutProfileInput>, PetStateUncheckedUpdateWithoutProfileInput>
+  }
+
   export type MealEntryUncheckedUpdateManyWithoutProfileNestedInput = {
     create?: XOR<MealEntryCreateWithoutProfileInput, MealEntryUncheckedCreateWithoutProfileInput> | MealEntryCreateWithoutProfileInput[] | MealEntryUncheckedCreateWithoutProfileInput[]
     connectOrCreate?: MealEntryCreateOrConnectWithoutProfileInput | MealEntryCreateOrConnectWithoutProfileInput[]
@@ -16224,6 +17747,38 @@ export namespace Prisma {
     update?: NotificationReadUpdateWithWhereUniqueWithoutProfileInput | NotificationReadUpdateWithWhereUniqueWithoutProfileInput[]
     updateMany?: NotificationReadUpdateManyWithWhereWithoutProfileInput | NotificationReadUpdateManyWithWhereWithoutProfileInput[]
     deleteMany?: NotificationReadScalarWhereInput | NotificationReadScalarWhereInput[]
+  }
+
+  export type PetStateUncheckedUpdateOneWithoutProfileNestedInput = {
+    create?: XOR<PetStateCreateWithoutProfileInput, PetStateUncheckedCreateWithoutProfileInput>
+    connectOrCreate?: PetStateCreateOrConnectWithoutProfileInput
+    upsert?: PetStateUpsertWithoutProfileInput
+    disconnect?: PetStateWhereInput | boolean
+    delete?: PetStateWhereInput | boolean
+    connect?: PetStateWhereUniqueInput
+    update?: XOR<XOR<PetStateUpdateToOneWithWhereWithoutProfileInput, PetStateUpdateWithoutProfileInput>, PetStateUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type ProfileCreateNestedOneWithoutPetStateInput = {
+    create?: XOR<ProfileCreateWithoutPetStateInput, ProfileUncheckedCreateWithoutPetStateInput>
+    connectOrCreate?: ProfileCreateOrConnectWithoutPetStateInput
+    connect?: ProfileWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type ProfileUpdateOneRequiredWithoutPetStateNestedInput = {
+    create?: XOR<ProfileCreateWithoutPetStateInput, ProfileUncheckedCreateWithoutPetStateInput>
+    connectOrCreate?: ProfileCreateOrConnectWithoutPetStateInput
+    upsert?: ProfileUpsertWithoutPetStateInput
+    connect?: ProfileWhereUniqueInput
+    update?: XOR<XOR<ProfileUpdateToOneWithWhereWithoutPetStateInput, ProfileUpdateWithoutPetStateInput>, ProfileUncheckedUpdateWithoutPetStateInput>
   }
 
   export type NotificationReadCreateNestedManyWithoutNotificationInput = {
@@ -16436,14 +17991,6 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type UserTargetUpdateManyWithoutNutrientNestedInput = {
@@ -16870,6 +18417,33 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type NestedDecimalFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
@@ -16925,33 +18499,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedEnumMealTypeFilter<$PrismaModel = never> = {
@@ -17083,6 +18630,31 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PetStateCreateWithoutProfileInput = {
+    bodySize?: number
+    muscleLevel?: number
+    puffinessLevel?: number
+    glowLevel?: number
+    lastEvaluatedWeekStart: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PetStateUncheckedCreateWithoutProfileInput = {
+    bodySize?: number
+    muscleLevel?: number
+    puffinessLevel?: number
+    glowLevel?: number
+    lastEvaluatedWeekStart: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PetStateCreateOrConnectWithoutProfileInput = {
+    where: PetStateWhereUniqueInput
+    create: XOR<PetStateCreateWithoutProfileInput, PetStateUncheckedCreateWithoutProfileInput>
+  }
+
   export type MealEntryUpsertWithWhereUniqueWithoutProfileInput = {
     where: MealEntryWhereUniqueInput
     update: XOR<MealEntryUpdateWithoutProfileInput, MealEntryUncheckedUpdateWithoutProfileInput>
@@ -17198,6 +18770,121 @@ export namespace Prisma {
     readAt?: DateTimeFilter<"NotificationRead"> | Date | string
   }
 
+  export type PetStateUpsertWithoutProfileInput = {
+    update: XOR<PetStateUpdateWithoutProfileInput, PetStateUncheckedUpdateWithoutProfileInput>
+    create: XOR<PetStateCreateWithoutProfileInput, PetStateUncheckedCreateWithoutProfileInput>
+    where?: PetStateWhereInput
+  }
+
+  export type PetStateUpdateToOneWithWhereWithoutProfileInput = {
+    where?: PetStateWhereInput
+    data: XOR<PetStateUpdateWithoutProfileInput, PetStateUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type PetStateUpdateWithoutProfileInput = {
+    bodySize?: IntFieldUpdateOperationsInput | number
+    muscleLevel?: IntFieldUpdateOperationsInput | number
+    puffinessLevel?: IntFieldUpdateOperationsInput | number
+    glowLevel?: IntFieldUpdateOperationsInput | number
+    lastEvaluatedWeekStart?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PetStateUncheckedUpdateWithoutProfileInput = {
+    bodySize?: IntFieldUpdateOperationsInput | number
+    muscleLevel?: IntFieldUpdateOperationsInput | number
+    puffinessLevel?: IntFieldUpdateOperationsInput | number
+    glowLevel?: IntFieldUpdateOperationsInput | number
+    lastEvaluatedWeekStart?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfileCreateWithoutPetStateInput = {
+    id: string
+    age?: number | null
+    gender?: string | null
+    weightKg?: Decimal | DecimalJsLike | number | string | null
+    heightCm?: Decimal | DecimalJsLike | number | string | null
+    goal?: $Enums.Goal | null
+    activityLevel?: $Enums.ActivityLevel | null
+    onboardingCompletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    mealEntries?: MealEntryCreateNestedManyWithoutProfileInput
+    userTargets?: UserTargetCreateNestedManyWithoutProfileInput
+    waterLogs?: WaterLogCreateNestedManyWithoutProfileInput
+    notificationReads?: NotificationReadCreateNestedManyWithoutProfileInput
+  }
+
+  export type ProfileUncheckedCreateWithoutPetStateInput = {
+    id: string
+    age?: number | null
+    gender?: string | null
+    weightKg?: Decimal | DecimalJsLike | number | string | null
+    heightCm?: Decimal | DecimalJsLike | number | string | null
+    goal?: $Enums.Goal | null
+    activityLevel?: $Enums.ActivityLevel | null
+    onboardingCompletedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    mealEntries?: MealEntryUncheckedCreateNestedManyWithoutProfileInput
+    userTargets?: UserTargetUncheckedCreateNestedManyWithoutProfileInput
+    waterLogs?: WaterLogUncheckedCreateNestedManyWithoutProfileInput
+    notificationReads?: NotificationReadUncheckedCreateNestedManyWithoutProfileInput
+  }
+
+  export type ProfileCreateOrConnectWithoutPetStateInput = {
+    where: ProfileWhereUniqueInput
+    create: XOR<ProfileCreateWithoutPetStateInput, ProfileUncheckedCreateWithoutPetStateInput>
+  }
+
+  export type ProfileUpsertWithoutPetStateInput = {
+    update: XOR<ProfileUpdateWithoutPetStateInput, ProfileUncheckedUpdateWithoutPetStateInput>
+    create: XOR<ProfileCreateWithoutPetStateInput, ProfileUncheckedCreateWithoutPetStateInput>
+    where?: ProfileWhereInput
+  }
+
+  export type ProfileUpdateToOneWithWhereWithoutPetStateInput = {
+    where?: ProfileWhereInput
+    data: XOR<ProfileUpdateWithoutPetStateInput, ProfileUncheckedUpdateWithoutPetStateInput>
+  }
+
+  export type ProfileUpdateWithoutPetStateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    age?: NullableIntFieldUpdateOperationsInput | number | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    weightKg?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    heightCm?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    goal?: NullableEnumGoalFieldUpdateOperationsInput | $Enums.Goal | null
+    activityLevel?: NullableEnumActivityLevelFieldUpdateOperationsInput | $Enums.ActivityLevel | null
+    onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mealEntries?: MealEntryUpdateManyWithoutProfileNestedInput
+    userTargets?: UserTargetUpdateManyWithoutProfileNestedInput
+    waterLogs?: WaterLogUpdateManyWithoutProfileNestedInput
+    notificationReads?: NotificationReadUpdateManyWithoutProfileNestedInput
+  }
+
+  export type ProfileUncheckedUpdateWithoutPetStateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    age?: NullableIntFieldUpdateOperationsInput | number | null
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    weightKg?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    heightCm?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    goal?: NullableEnumGoalFieldUpdateOperationsInput | $Enums.Goal | null
+    activityLevel?: NullableEnumActivityLevelFieldUpdateOperationsInput | $Enums.ActivityLevel | null
+    onboardingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mealEntries?: MealEntryUncheckedUpdateManyWithoutProfileNestedInput
+    userTargets?: UserTargetUncheckedUpdateManyWithoutProfileNestedInput
+    waterLogs?: WaterLogUncheckedUpdateManyWithoutProfileNestedInput
+    notificationReads?: NotificationReadUncheckedUpdateManyWithoutProfileNestedInput
+  }
+
   export type NotificationReadCreateWithoutNotificationInput = {
     id?: string
     readAt?: Date | string
@@ -17271,6 +18958,7 @@ export namespace Prisma {
     mealEntries?: MealEntryCreateNestedManyWithoutProfileInput
     userTargets?: UserTargetCreateNestedManyWithoutProfileInput
     waterLogs?: WaterLogCreateNestedManyWithoutProfileInput
+    petState?: PetStateCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateWithoutNotificationReadsInput = {
@@ -17287,6 +18975,7 @@ export namespace Prisma {
     mealEntries?: MealEntryUncheckedCreateNestedManyWithoutProfileInput
     userTargets?: UserTargetUncheckedCreateNestedManyWithoutProfileInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutProfileInput
+    petState?: PetStateUncheckedCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileCreateOrConnectWithoutNotificationReadsInput = {
@@ -17346,6 +19035,7 @@ export namespace Prisma {
     mealEntries?: MealEntryUpdateManyWithoutProfileNestedInput
     userTargets?: UserTargetUpdateManyWithoutProfileNestedInput
     waterLogs?: WaterLogUpdateManyWithoutProfileNestedInput
+    petState?: PetStateUpdateOneWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateWithoutNotificationReadsInput = {
@@ -17362,6 +19052,7 @@ export namespace Prisma {
     mealEntries?: MealEntryUncheckedUpdateManyWithoutProfileNestedInput
     userTargets?: UserTargetUncheckedUpdateManyWithoutProfileNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutProfileNestedInput
+    petState?: PetStateUncheckedUpdateOneWithoutProfileNestedInput
   }
 
   export type FoodCreateWithoutCategoryInput = {
@@ -17644,6 +19335,7 @@ export namespace Prisma {
     mealEntries?: MealEntryCreateNestedManyWithoutProfileInput
     waterLogs?: WaterLogCreateNestedManyWithoutProfileInput
     notificationReads?: NotificationReadCreateNestedManyWithoutProfileInput
+    petState?: PetStateCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateWithoutUserTargetsInput = {
@@ -17660,6 +19352,7 @@ export namespace Prisma {
     mealEntries?: MealEntryUncheckedCreateNestedManyWithoutProfileInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutProfileInput
     notificationReads?: NotificationReadUncheckedCreateNestedManyWithoutProfileInput
+    petState?: PetStateUncheckedCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileCreateOrConnectWithoutUserTargetsInput = {
@@ -17725,6 +19418,7 @@ export namespace Prisma {
     mealEntries?: MealEntryUpdateManyWithoutProfileNestedInput
     waterLogs?: WaterLogUpdateManyWithoutProfileNestedInput
     notificationReads?: NotificationReadUpdateManyWithoutProfileNestedInput
+    petState?: PetStateUpdateOneWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateWithoutUserTargetsInput = {
@@ -17741,6 +19435,7 @@ export namespace Prisma {
     mealEntries?: MealEntryUncheckedUpdateManyWithoutProfileNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutProfileNestedInput
     notificationReads?: NotificationReadUncheckedUpdateManyWithoutProfileNestedInput
+    petState?: PetStateUncheckedUpdateOneWithoutProfileNestedInput
   }
 
   export type NutrientUpsertWithoutUserTargetsInput = {
@@ -17796,6 +19491,7 @@ export namespace Prisma {
     userTargets?: UserTargetCreateNestedManyWithoutProfileInput
     waterLogs?: WaterLogCreateNestedManyWithoutProfileInput
     notificationReads?: NotificationReadCreateNestedManyWithoutProfileInput
+    petState?: PetStateCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateWithoutMealEntriesInput = {
@@ -17812,6 +19508,7 @@ export namespace Prisma {
     userTargets?: UserTargetUncheckedCreateNestedManyWithoutProfileInput
     waterLogs?: WaterLogUncheckedCreateNestedManyWithoutProfileInput
     notificationReads?: NotificationReadUncheckedCreateNestedManyWithoutProfileInput
+    petState?: PetStateUncheckedCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileCreateOrConnectWithoutMealEntriesInput = {
@@ -17901,6 +19598,7 @@ export namespace Prisma {
     userTargets?: UserTargetUpdateManyWithoutProfileNestedInput
     waterLogs?: WaterLogUpdateManyWithoutProfileNestedInput
     notificationReads?: NotificationReadUpdateManyWithoutProfileNestedInput
+    petState?: PetStateUpdateOneWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateWithoutMealEntriesInput = {
@@ -17917,6 +19615,7 @@ export namespace Prisma {
     userTargets?: UserTargetUncheckedUpdateManyWithoutProfileNestedInput
     waterLogs?: WaterLogUncheckedUpdateManyWithoutProfileNestedInput
     notificationReads?: NotificationReadUncheckedUpdateManyWithoutProfileNestedInput
+    petState?: PetStateUncheckedUpdateOneWithoutProfileNestedInput
   }
 
   export type FoodUpsertWithoutMealEntriesInput = {
@@ -18138,6 +19837,7 @@ export namespace Prisma {
     mealEntries?: MealEntryCreateNestedManyWithoutProfileInput
     userTargets?: UserTargetCreateNestedManyWithoutProfileInput
     notificationReads?: NotificationReadCreateNestedManyWithoutProfileInput
+    petState?: PetStateCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateWithoutWaterLogsInput = {
@@ -18154,6 +19854,7 @@ export namespace Prisma {
     mealEntries?: MealEntryUncheckedCreateNestedManyWithoutProfileInput
     userTargets?: UserTargetUncheckedCreateNestedManyWithoutProfileInput
     notificationReads?: NotificationReadUncheckedCreateNestedManyWithoutProfileInput
+    petState?: PetStateUncheckedCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileCreateOrConnectWithoutWaterLogsInput = {
@@ -18186,6 +19887,7 @@ export namespace Prisma {
     mealEntries?: MealEntryUpdateManyWithoutProfileNestedInput
     userTargets?: UserTargetUpdateManyWithoutProfileNestedInput
     notificationReads?: NotificationReadUpdateManyWithoutProfileNestedInput
+    petState?: PetStateUpdateOneWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateWithoutWaterLogsInput = {
@@ -18202,6 +19904,7 @@ export namespace Prisma {
     mealEntries?: MealEntryUncheckedUpdateManyWithoutProfileNestedInput
     userTargets?: UserTargetUncheckedUpdateManyWithoutProfileNestedInput
     notificationReads?: NotificationReadUncheckedUpdateManyWithoutProfileNestedInput
+    petState?: PetStateUncheckedUpdateOneWithoutProfileNestedInput
   }
 
   export type MealEntryCreateManyProfileInput = {

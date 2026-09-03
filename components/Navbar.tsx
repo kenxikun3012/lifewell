@@ -101,24 +101,30 @@ export default function Navbar() {
                   )}
                 </Link>
 
-                {/* Profile icon + user name -> Account page */}
+                {/* Profile photo/icon + user name -> Account page */}
                 <Link
                   href="/account"
                   className="flex items-center gap-2 text-secondary-text hover:text-primary-green transition-colors"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
+                  {user?.image ? (
+                    <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full">
+                      <Image src={user.image} alt="" fill className="object-cover" />
+                    </span>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                  )}
                   <span className="text-sm font-medium">{user?.name}</span>
                 </Link>
                 <button
@@ -201,6 +207,44 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
+                <Link
+                  href="/notifications"
+                  className="flex items-center justify-between py-2 text-secondary-text text-sm font-medium hover:text-primary-green transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span>Notifications</span>
+                  {unreadCount > 0 && (
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-semibold text-white">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </Link>
+                <Link
+                  href="/account"
+                  className="flex items-center gap-2 py-2 text-secondary-text text-sm font-medium hover:text-primary-green transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {user?.image ? (
+                    <span className="relative h-6 w-6 shrink-0 overflow-hidden rounded-full">
+                      <Image src={user.image} alt="" fill className="object-cover" />
+                    </span>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                  )}
+                  <span>Account</span>
+                </Link>
                 <hr className="border-gray-100" />
                 <div className="flex items-center justify-between pt-2">
                   <span className="text-sm font-medium text-secondary-text">

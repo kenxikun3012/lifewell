@@ -37,7 +37,7 @@ export default function NutrientChart({
 
   return (
     <div className="col-span-12 rounded-[20px] bg-[#DDF8FF] p-5 shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] lg:col-span-8">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#69B96A] text-white">
             <Leaf size={20} />

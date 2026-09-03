@@ -2,15 +2,9 @@
 
 import { requireOnboardedUser } from "@/lib/onboarding";
 import { prisma } from "@/lib/prisma";
+import { WATER_GOAL_ML } from "@/lib/constants";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-
-/**
- * Default daily water goal. Not user-configurable yet — the target-setting
- * flow (UserTarget) only covers the 4 macro Nutrients; water isn't a
- * Nutrient row in this schema, so it stays a simple constant for now.
- */
-const WATER_GOAL_ML = 2000;
 
 function todayDateString(): string {
   const now = new Date();
